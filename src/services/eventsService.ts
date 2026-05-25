@@ -1,33 +1,18 @@
-import { supabase, isSupabaseConfigured } from '../lib/supabase'
+import { sanity, isSanityConfigured } from '../lib/sanityClient'
+import { EVENTS_QUERY } from '../lib/sanityQueries'
 import { events as mockEvents } from '../data/events'
 import type { Event } from '../types'
 
-function toEvent(row: Record<string, unknown>): Event {
-  return {
-    id: row.id as string,
-    title: row.title as string,
-    date: row.date as string,
-    location: row.location as string,
-    type: row.type as Event['type'],
-    summary: row.summary as string,
-    link: (row.link as string | null) ?? undefined,
-    isPast: row.is_past as boolean,
-    image: (row.image as string | null) ?? undefined,
-  }
-}
+const TODAY = new Date().toISOString().split('T')[0]
 
 export async function fetchEvents(): Promise<Event[]> {
-  if (!isSupabaseConfigured || !supabase) return mockEvents
+  if (!isSanityConfigured || !sanity) return mockEvents
 
-  const { data, error } = await supabase
-    .from('events')
-    .select('*')
-    .order('date', { ascending: false })
-
-  if (error || !data) {
-    console.warn('[eventsService] Supabase error, fallback to mock:', error?.message)
+  try {
+    const data = await sanity.fetch<Array<Event & { date: string }>>(EVENTS_QUERY)
+    return data.map(e => ({ ...e, isPast: e.date < TODAY }))
+  } catch (err) {
+    console.warn('[eventsService] Sanity error, fallback to mock:', err)
     return mockEvents
   }
-
-  return data.map(toEvent)
 }
