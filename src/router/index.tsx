@@ -10,6 +10,8 @@ import { AgendaPage } from '../pages/AgendaPage'
 import { NewsPage } from '../pages/NewsPage'
 import { LegalPage } from '../pages/LegalPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
+import { AidesPage } from '../pages/AidesPage'
+import { AboutPage } from '../pages/AboutPage'
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +26,8 @@ export const router = createBrowserRouter([
       { path: 'se-former', element: <TrainingPage /> },
       { path: 'agenda', element: <AgendaPage /> },
       { path: 'actualites', element: <NewsPage /> },
+      { path: 'aides', element: <AidesPage /> },
+      { path: 'a-propos', element: <AboutPage /> },
       { path: 'mentions-legales', element: <LegalPage /> },
       // Legacy redirects
       { path: 'projet', element: <Navigate to="/lancer-projet" replace /> },

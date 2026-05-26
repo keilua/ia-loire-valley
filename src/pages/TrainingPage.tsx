@@ -58,10 +58,14 @@ const profiles = [
 ]
 
 const partners = [
-  { name: 'France Université Numérique (FUN)', type: 'MOOC gratuits', topics: 'Bases de l\'IA, machine learning', url: 'https://www.fun-mooc.fr' },
-  { name: 'OpenClassrooms', type: 'Parcours certifiants', topics: 'Data science, IA appliquée', url: 'https://openclassrooms.com' },
-  { name: 'LinkedIn Learning', type: 'Cours en ligne', topics: 'Outils IA, ChatGPT, productivité', url: 'https://www.linkedin.com/learning' },
-  { name: 'Organismes locaux partenaires', type: 'Formations présentielles', topics: 'Formations sur-mesure pour entreprises', url: '#' },
+  { name: 'France Université Numérique (FUN)', type: 'MOOC gratuits', topics: 'Bases de l\'IA, machine learning, IA et société', url: 'https://www.fun-mooc.fr', free: true },
+  { name: 'Google – Fondamentaux de l\'IA', type: 'Cours en ligne gratuit', topics: 'IA générative, Gemini, Machine Learning, Google Cloud', url: 'https://grow.google/intl/fr_fr/learn-skills/ai/', free: true },
+  { name: 'Microsoft – AI Skills Initiative', type: 'Parcours gratuits', topics: 'Copilot, Azure AI, IA responsable, outils Microsoft 365', url: 'https://www.microsoft.com/fr-fr/ai/ai-skills', free: true },
+  { name: 'INRIA – Classe IA', type: 'MOOC gratuit', topics: 'Comprendre l\'IA, éthique, algorithmes, données', url: 'https://www.fun-mooc.fr/fr/cours/lintelligence-artificielle-avec-intelligence/', free: true },
+  { name: 'Coursera – IA for Everyone', type: 'Cours (audit gratuit)', topics: 'Stratégie IA pour non-techniques, cas d\'usage, feuille de route', url: 'https://www.coursera.org/learn/ai-for-everyone', free: true },
+  { name: 'OpenClassrooms', type: 'Parcours certifiants', topics: 'Data science, IA appliquée, développement IA', url: 'https://openclassrooms.com', free: false },
+  { name: 'Simplon.co', type: 'Formations intensives', topics: 'Data, IA, développement — formations accessibles et financées', url: 'https://simplon.co', free: false },
+  { name: 'Organismes locaux partenaires', type: 'Formations présentielles CVL', topics: 'Formations sur-mesure pour entreprises de la région', url: '/experts', free: false },
 ]
 
 export function TrainingPage() {
@@ -205,22 +209,35 @@ export function TrainingPage() {
 
         {/* Partners */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Plateformes et partenaires recommandés</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Plateformes recommandées</h2>
+          <p className="text-gray-500 mb-6">Ressources sélectionnées — certaines entièrement gratuites.</p>
           <div className="grid md:grid-cols-2 gap-6">
-            {partners.map((p, i) => (
-              <a key={i} href={p.url} target="_blank" rel="noopener noreferrer">
-                <Card className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group h-full">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <h3 className="font-bold text-gray-900 mb-1 group-hover:text-magenta transition-colors">{p.name}</h3>
-                      <p className="text-sm text-violet">{p.type}</p>
+            {partners.map((p, i) => {
+              const isInternal = p.url.startsWith('/')
+              const Wrapper = isInternal ? Link : 'a'
+              const wrapperProps = isInternal
+                ? { to: p.url }
+                : { href: p.url, target: '_blank', rel: 'noopener noreferrer' }
+              return (
+                <Wrapper key={i} {...(wrapperProps as any)}>
+                  <Card className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group h-full">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-gray-900 group-hover:text-magenta transition-colors">{p.name}</h3>
+                          {p.free && (
+                            <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-semibold">GRATUIT</span>
+                          )}
+                        </div>
+                        <p className="text-sm text-violet">{p.type}</p>
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all shrink-0 ml-2" />
                     </div>
-                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all shrink-0 ml-2" />
-                  </div>
-                  <p className="text-sm text-gray-600">{p.topics}</p>
-                </Card>
-              </a>
-            ))}
+                    <p className="text-sm text-gray-600">{p.topics}</p>
+                  </Card>
+                </Wrapper>
+              )
+            })}
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, ChevronDown, Zap } from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
+import logo from '../../assets/LOGO IA LOIRE VALLEY.png'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/Button'
 import { cn } from '../../utils/cn'
@@ -10,6 +11,7 @@ const services = [
   { label: 'Lancer un projet', href: '/lancer-projet', desc: 'Structurer votre démarche IA' },
   { label: 'Trouver un expert', href: '/experts', desc: 'Identifier le bon partenaire' },
   { label: 'Se former à l\'IA', href: '/se-former', desc: 'Monter en compétences' },
+  { label: 'Aides & financements', href: '/aides', desc: 'Subventions, prêts, fiscalité' },
 ]
 
 export function Navbar() {
@@ -39,11 +41,10 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 font-bold text-lg text-gray-900 hover:opacity-90 transition-opacity">
-            <div className="w-8 h-8 gradient-brand rounded-lg flex items-center justify-center flex-shrink-0">
-              <Zap className="w-4 h-4 text-white" />
+          <Link to="/" className="flex items-center hover:opacity-90 transition-opacity">
+            <div className="gradient-brand rounded-xl px-4 py-2 flex items-center justify-center shrink-0">
+              <img src={logo} alt="IA Loire Valley" className="h-8 w-auto max-w-40" />
             </div>
-            <span>IA Loire Valley</span>
           </Link>
 
           {/* Desktop nav */}

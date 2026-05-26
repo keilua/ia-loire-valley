@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Zap, Mail, MapPin, ArrowRight } from 'lucide-react'
+import { Mail, MapPin, ArrowRight } from 'lucide-react'
+import logo from '../../assets/LOGO IA LOIRE VALLEY.png'
 
 const nav = {
   Services: [
@@ -7,11 +8,13 @@ const nav = {
     { label: 'Lancer un projet', href: '/lancer-projet' },
     { label: 'Trouver un expert', href: '/experts' },
     { label: 'Se former à l\'IA', href: '/se-former' },
+    { label: 'Aides & financements', href: '/aides' },
   ],
   Ressources: [
     { label: 'Agenda', href: '/agenda' },
     { label: 'Actualités', href: '/actualites' },
     { label: 'Diagnostic IA', href: '/quiz' },
+    { label: 'À propos', href: '/a-propos' },
   ],
 }
 
@@ -22,11 +25,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 gradient-brand rounded-lg flex items-center justify-center">
-                <Zap className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-bold text-white text-lg">IA Loire Valley</span>
+            <Link to="/" className="inline-flex mb-4">
+              <img src={logo} alt="IA Loire Valley" className="h-8 w-auto" />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
               La plateforme régionale pour comprendre l'IA, trouver un expert et lancer votre projet en Centre-Val de Loire.
