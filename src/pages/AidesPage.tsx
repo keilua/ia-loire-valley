@@ -219,6 +219,29 @@ export function AidesPage() {
           })}
         </div>
 
+        {/* Annuaires */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Aller plus loin</h2>
+          <p className="text-gray-500 mb-6">Annuaires et guides pour trouver d'autres aides adaptées à votre situation.</p>
+          <div className="grid md:grid-cols-3 gap-4">
+            {[
+              { name: 'AI Partner', desc: 'Guide complet des aides publiques IA pour PME et ETI en 2025', url: 'https://ai-partner.fr/fr/blog/aides-publiques-pour-financer-les-projets-dintelligence-artificielle-en-2025-pour-les-pme-et-eti' },
+              { name: 'France Num', desc: 'Moteur de recherche officiel des aides à la transformation numérique', url: 'https://www.francenum.gouv.fr/aides-financieres/trouver-une-aide-financiere' },
+              { name: 'Les-Aides.fr', desc: 'Annuaire national de toutes les aides publiques aux entreprises', url: 'https://les-aides.fr' },
+            ].map((r, i) => (
+              <a key={i} href={r.url} target="_blank" rel="noopener noreferrer">
+                <Card className="p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group h-full">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="font-bold text-gray-900 group-hover:text-magenta transition-colors">{r.name}</h3>
+                    <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                  </div>
+                  <p className="text-sm text-gray-600">{r.desc}</p>
+                </Card>
+              </a>
+            ))}
+          </div>
+        </div>
+
         {/* CTA */}
         <Card className="p-8 sm:p-12 bg-linear-to-br from-gray-50 to-purple-50/30 rounded-3xl text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Vous ne savez pas par où commencer ?</h2>
