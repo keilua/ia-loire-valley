@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity'
+import { AddressInput } from '../components/AddressInput'
 
 export const expertSchema = defineType({
   name: 'expert',
@@ -12,10 +13,11 @@ export const expertSchema = defineType({
       validation: Rule => Rule.required(),
     }),
     defineField({
-      name: 'avatarUrl',
-      title: 'Photo (URL)',
-      description: 'URL d\'une photo de profil (LinkedIn, site web…)',
-      type: 'url',
+      name: 'logo',
+      title: 'Logo de l\'organisation',
+      type: 'image',
+      options: { hotspot: true },
+      description: 'Logo de l\'entreprise — glissez-déposez ou importez une image',
     }),
     defineField({
       name: 'specialty',
@@ -45,6 +47,27 @@ export const expertSchema = defineType({
         ],
       },
       validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'address',
+      title: 'Adresse complète',
+      type: 'string',
+      description: 'Ex: 1 rue de la Paix, 45000 Orléans',
+      components: { input: AddressInput },
+    }),
+    defineField({
+      name: 'lat',
+      title: 'Latitude (GPS)',
+      type: 'number',
+      description: 'Rempli automatiquement par le bouton "Géocoder l\'adresse"',
+      readOnly: true,
+    }),
+    defineField({
+      name: 'lng',
+      title: 'Longitude (GPS)',
+      type: 'number',
+      description: 'Rempli automatiquement par le bouton "Géocoder l\'adresse"',
+      readOnly: true,
     }),
     defineField({
       name: 'sectors',

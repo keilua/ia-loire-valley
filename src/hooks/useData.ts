@@ -3,7 +3,8 @@ import { fetchEvents } from '../services/eventsService'
 import { fetchExperts } from '../services/expertsService'
 import { fetchNews } from '../services/newsService'
 import { fetchTrainings } from '../services/trainingsService'
-import type { Event, Expert, NewsArticle, Training } from '../types'
+import { fetchAmbassadeurs } from '../services/ambassadeursService'
+import type { Event, Expert, NewsArticle, Training, Ambassadeur } from '../types'
 
 interface UseDataResult<T> {
   data: T[]
@@ -42,7 +43,8 @@ function useAsyncData<T>(fetcher: () => Promise<T[]>): UseDataResult<T> {
   return { data, loading, error }
 }
 
-export const useEvents    = (): UseDataResult<Event>       => useAsyncData(fetchEvents)
-export const useExperts   = (): UseDataResult<Expert>      => useAsyncData(fetchExperts)
-export const useNews      = (): UseDataResult<NewsArticle> => useAsyncData(fetchNews)
-export const useTrainings = (): UseDataResult<Training>    => useAsyncData(fetchTrainings)
+export const useEvents       = (): UseDataResult<Event>       => useAsyncData(fetchEvents)
+export const useExperts      = (): UseDataResult<Expert>      => useAsyncData(fetchExperts)
+export const useNews         = (): UseDataResult<NewsArticle> => useAsyncData(fetchNews)
+export const useTrainings    = (): UseDataResult<Training>    => useAsyncData(fetchTrainings)
+export const useAmbassadeurs = (): UseDataResult<Ambassadeur> => useAsyncData(fetchAmbassadeurs)

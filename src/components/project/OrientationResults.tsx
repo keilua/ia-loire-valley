@@ -70,7 +70,12 @@ export function OrientationResults({ result, onReset }: Props) {
             {result.experts.map(expert => (
               <div key={expert.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <img src={expert.avatar} alt={expert.name} className="w-10 h-10 rounded-xl bg-gray-100" />
+                  <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden border border-gray-200">
+                    {expert.logo
+                      ? <img src={expert.logo} alt={expert.name} className="w-full h-full object-contain p-1" loading="lazy" />
+                      : <span className="text-sm font-bold text-gray-400">{expert.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}</span>
+                    }
+                  </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-gray-900 text-sm truncate">{expert.name}</p>
                     <p className="text-xs text-gray-500 truncate">{expert.location}</p>

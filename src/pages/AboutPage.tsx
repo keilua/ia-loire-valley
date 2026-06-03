@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Target, Users, MapPin, Mail, Zap, Heart } from 'lucide-react'
+import { ArrowLeft, Target, Users, MapPin, Mail, Zap, Heart } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
 
@@ -31,9 +31,9 @@ const values = [
 ]
 
 const partners = [
-  { name: 'JCE Orléans', role: 'Porteur de projet', placeholder: true },
-  { name: 'Région Centre-Val de Loire', role: 'Partenaire institutionnel', placeholder: true },
-  { name: 'Digital Loire Valley', role: 'Partenaire numérique', placeholder: true },
+  { name: 'JCI Orléans', role: 'Porteur de projet', logo: '/logo-jci-orleans.svg' },
+  { name: 'Région Centre-Val de Loire', role: 'Partenaire institutionnel', logo: '/Logo_region_centre-val_de_loire.png' },
+  { name: 'Recia', role: 'Partenaire numérique', logo: '/Recia_CVDL_logo.png' },
   { name: 'CCI Centre-Val de Loire', role: 'Partenaire économique', placeholder: true },
 ]
 
@@ -106,17 +106,18 @@ export function AboutPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {partners.map((p, i) => (
               <Card key={i} className="p-5 shadow-sm text-center">
-                {p.placeholder && (
-                  <div className="w-16 h-16 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                    <Building2 className="w-8 h-8 text-gray-300" />
-                  </div>
-                )}
+                <div className="w-20 h-14 flex items-center justify-center mx-auto mb-3">
+                  {'logo' in p && p.logo
+                    ? <img src={p.logo} alt={p.name} className="w-full h-full object-contain" />
+                    : <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center"><Building2 className="w-8 h-8 text-gray-300" /></div>
+                  }
+                </div>
                 <p className="font-semibold text-gray-900 text-sm mb-1">{p.name}</p>
                 <p className="text-xs text-gray-500">{p.role}</p>
               </Card>
             ))}
           </div>
-          <p className="text-xs text-gray-400 mt-3">* Logos à venir</p>
+          <p className="text-xs text-gray-400 mt-3">* Autres logos à venir</p>
         </div>
 
         {/* Team */}
@@ -149,11 +150,6 @@ export function AboutPage() {
                 <Mail className="mr-2 w-5 h-5" />Nous contacter
               </Button>
             </a>
-            <Link to="/lancer-projet">
-              <Button size="lg" variant="outline" className="rounded-full px-8">
-                Décrire un projet <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
           </div>
         </Card>
 

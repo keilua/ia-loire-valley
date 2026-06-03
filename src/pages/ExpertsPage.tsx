@@ -1,180 +1,279 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, MapPin, Briefcase, ArrowLeft, Mail } from 'lucide-react'
+import { ArrowLeft, Search, MapPin, Mail, Building2, Users, Filter } from 'lucide-react'
 import { Button } from '../components/ui/Button'
-import { Input } from '../components/ui/input'
 import { Card } from '../components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select'
-import { useExperts } from '../hooks/useData'
+import { useExperts, useAmbassadeurs } from '../hooks/useData'
 import { LoadingGrid, LoadingError } from '../components/ui/LoadingGrid'
+import { ExpertModal } from '../components/experts/ExpertModal'
+import type { Expert, Ambassadeur } from '../types'
 
-const avatarColors = [
-  'from-magenta to-rose',
-  'from-violet to-magenta',
-  'from-orange to-magenta',
-  'from-rose to-violet',
-  'from-magenta to-violet',
-  'from-violet to-rose',
-]
+const InteractiveMap = lazy(() => import('../components/map/InteractiveMap').then(m => ({ default: m.InteractiveMap })))
+
+const levelColors: Record<string, string> = {
+  Conseil: 'bg-magenta/10 text-magenta',
+  Accompagnement: 'bg-violet/10 text-violet',
+  Formation: 'bg-orange/10 text-orange',
+  Développement: 'bg-rose/10 text-rose',
+}
+
+const secteurColors: Record<string, string> = {
+  INDUSTRIE: 'bg-orange/10 text-orange',
+  SANTE: 'bg-rose/10 text-rose',
+  AGRICULTURE: 'bg-green-100 text-green-700',
+  EDUCATION: 'bg-blue-100 text-blue-700',
+}
+
+type Tab = 'experts' | 'ambassadeurs'
 
 export function ExpertsPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedSector, setSelectedSector] = useState('all')
-  const [selectedLocation, setSelectedLocation] = useState('all')
+  const [tab, setTab] = useState<Tab>('experts')
+  const [search, setSearch] = useState('')
+  const [selectedModal, setSelectedModal] = useState<Expert | null>(null)
 
-  const { data: experts = [], loading, error } = useExperts()
+  const { data: experts = [], loading: loadingExperts, error: errorExperts } = useExperts()
+  const { data: ambassadeurs = [], loading: loadingAmb, error: errorAmb } = useAmbassadeurs()
 
-  const filteredExperts = experts.filter(expert => {
-    const matchesSearch =
-      expert.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      expert.specialty.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesSector =
-      selectedSector === 'all' ||
-      expert.sectors.some(s => s.toLowerCase().includes(selectedSector.toLowerCase()))
-    const matchesLocation =
-      selectedLocation === 'all' || expert.location === selectedLocation
+  const filteredExperts = useMemo(() => {
+    const q = search.toLowerCase()
+    const seen = new Set<string>()
+    return experts.filter(e => {
+      if (seen.has(e.id)) return false
+      seen.add(e.id)
+      return q === '' ||
+        e.name.toLowerCase().includes(q) ||
+        e.specialty.toLowerCase().includes(q) ||
+        e.sectors.some(s => s.toLowerCase().includes(q))
+    })
+  }, [experts, search])
 
-    return matchesSearch && matchesSector && matchesLocation
-  })
-
-  const locations = [...new Set(experts.map(e => e.location))].sort()
+  const filteredAmb = useMemo(() => {
+    const q = search.toLowerCase()
+    const seen = new Set<string>()
+    return ambassadeurs.filter(a => {
+      if (seen.has(a.id)) return false
+      seen.add(a.id)
+      return q === '' ||
+        a.nom.toLowerCase().includes(q) ||
+        a.prenom.toLowerCase().includes(q) ||
+        a.organisation.toLowerCase().includes(q) ||
+        (a.secteur ?? '').toLowerCase().includes(q)
+    })
+  }, [ambassadeurs, search])
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
+      <div className="max-w-6xl mx-auto">
+
+        {/* Header */}
+        <div className="mb-10">
           <Link to="/" className="inline-flex items-center text-violet hover:text-magenta mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />Retour à l'accueil
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Annuaire des experts IA</h1>
-          <p className="text-lg text-gray-600">Trouvez l'expert IA qui correspond à vos besoins en Centre-Val de Loire</p>
-        </div>
-
-        {/* Filters */}
-        <Card className="p-6 mb-8 shadow-sm">
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="md:col-span-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input
-                placeholder="Rechercher un expert…"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Select value={selectedSector} onValueChange={setSelectedSector}>
-              <SelectTrigger>
-                <SelectValue placeholder="Secteur d'activité" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous les secteurs</SelectItem>
-                <SelectItem value="industrie">Industrie</SelectItem>
-                <SelectItem value="sante">Santé</SelectItem>
-                <SelectItem value="finance">Finance</SelectItem>
-                <SelectItem value="retail">Commerce / Retail</SelectItem>
-                <SelectItem value="rh">RH / Formation</SelectItem>
-                <SelectItem value="collectivite">Collectivités</SelectItem>
-                <SelectItem value="tech">Tech</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-              <SelectTrigger>
-                <SelectValue placeholder="Localisation" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toutes les villes</SelectItem>
-                {locations.map(loc => (
-                  <SelectItem key={loc} value={loc}>{loc}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </Card>
-
-        {/* Count */}
-        <div className="mb-6">
-          <p className="text-gray-600">
-            <span className="font-semibold text-gray-900">{filteredExperts.length}</span>
-            {' '}expert{filteredExperts.length > 1 ? 's' : ''} trouvé{filteredExperts.length > 1 ? 's' : ''}
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">Annuaire IA — Centre-Val de Loire</h1>
+          <p className="text-lg text-gray-600 max-w-3xl">
+            Trouvez les experts IA et les ambassadeurs du programme national «&nbsp;Osez l'IA&nbsp;» dans votre région.
           </p>
         </div>
 
-        {/* Grid */}
-        {loading ? (
-          <LoadingGrid count={6} />
-        ) : error ? (
-          <LoadingError message={error} />
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredExperts.map((expert, i) => (
-              <Card
-                key={expert.id}
-                className="p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="flex items-start gap-4 mb-4">
-                  <div className={`w-16 h-16 rounded-xl bg-linear-to-br ${avatarColors[i % avatarColors.length]} flex items-center justify-center shrink-0 overflow-hidden`}>
-                    {expert.avatar ? (
-                      <img src={expert.avatar} alt={expert.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-white text-lg font-bold">
-                        {expert.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-gray-900 mb-1">{expert.name}</h3>
-                    <p className="text-sm text-violet font-medium truncate">{expert.specialty}</p>
-                  </div>
-                </div>
+        {/* Tabs */}
+        <div className="flex gap-2 mb-8 p-1 bg-white rounded-2xl shadow-sm w-fit border border-gray-100">
+          <button
+            onClick={() => { setTab('experts'); setSearch('') }}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
+              tab === 'experts'
+                ? 'bg-linear-to-r from-magenta to-violet text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            Experts IA
+            {experts.length > 0 && (
+              <span className={`text-xs px-2 py-0.5 rounded-full ${tab === 'experts' ? 'bg-white/20' : 'bg-gray-100'}`}>
+                {experts.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => { setTab('ambassadeurs'); setSearch('') }}
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
+              tab === 'ambassadeurs'
+                ? 'bg-linear-to-r from-violet to-magenta text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            Ambassadeurs IA
+            {ambassadeurs.length > 0 && (
+              <span className={`text-xs px-2 py-0.5 rounded-full ${tab === 'ambassadeurs' ? 'bg-white/20' : 'bg-gray-100'}`}>
+                {ambassadeurs.length}
+              </span>
+            )}
+          </button>
+        </div>
 
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                  <MapPin className="w-4 h-4 text-magenta shrink-0" />
-                  <span>{expert.location}</span>
-                </div>
+        {/* Map — between tabs and search */}
+        <div className="mb-6">
+          <Suspense fallback={<div className="h-80 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-500 text-sm">Chargement de la carte…</div>}>
+            {tab === 'experts'
+              ? <InteractiveMap key="experts" experts={filteredExperts} />
+              : <InteractiveMap key="ambassadeurs" ambassadeurs={filteredAmb} />
+            }
+          </Suspense>
+        </div>
 
-                <div className="flex items-start gap-2 mb-4">
-                  <Briefcase className="w-4 h-4 text-magenta mt-0.5 shrink-0" />
-                  <div className="flex flex-wrap gap-1">
-                    {expert.sectors.slice(0, 3).map((sector, j) => (
-                      <span key={j} className="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded-full">
-                        {sector}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2">{expert.description}</p>
-
-                {expert.email && (
-                  <a href={`mailto:${expert.email}`}>
-                    <Button className="w-full justify-center rounded-xl">
-                      <Mail className="w-4 h-4 mr-2" />Contacter
-                    </Button>
-                  </a>
-                )}
-              </Card>
-            ))}
+        {/* Search */}
+        <Card className="p-4 mb-8 shadow-sm">
+          <div className="flex items-center gap-3">
+            <Filter className="w-4 h-4 text-gray-400 shrink-0" />
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder={tab === 'experts' ? 'Rechercher par nom, spécialité, secteur…' : 'Rechercher par nom, organisation, secteur…'}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-magenta/30 focus:border-magenta"
+              />
+            </div>
           </div>
+        </Card>
+
+        {/* ── EXPERTS TAB ── */}
+        {tab === 'experts' && (
+          <>
+            {loadingExperts ? <LoadingGrid count={6} variant="expert" /> : errorExperts ? <LoadingError message={errorExperts} /> : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                {filteredExperts.map(expert => (
+                  <ExpertCard key={expert.id} expert={expert} onClick={() => setSelectedModal(expert)} />
+                ))}
+                {filteredExperts.length === 0 && (
+                  <div className="col-span-3 text-center py-12 text-gray-500">
+                    Aucun expert trouvé pour « {search} »
+                  </div>
+                )}
+              </div>
+            )}
+
+            <Card className="p-6 bg-linear-to-br from-violet/5 to-magenta/5 border border-violet/10 shadow-none">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-bold text-gray-900 mb-1">Vous êtes expert IA en Centre-Val de Loire ?</h3>
+                  <p className="text-sm text-gray-600">Rejoignez l'annuaire et rendez-vous visible auprès des entreprises de la région.</p>
+                </div>
+                <Link to="/experts/register">
+                  <Button className="rounded-xl shrink-0">Rejoindre l'annuaire</Button>
+                </Link>
+              </div>
+            </Card>
+          </>
         )}
 
-        {/* No results */}
-        {!loading && !error && filteredExperts.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-gray-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucun expert trouvé</h3>
-            <p className="text-gray-600 mb-4">Essayez de modifier vos critères de recherche</p>
-            <Button
-              variant="outline"
-              className="rounded-xl"
-              onClick={() => { setSearchTerm(''); setSelectedSector('all'); setSelectedLocation('all') }}
-            >
-              Réinitialiser les filtres
-            </Button>
+        {/* ── AMBASSADEURS TAB ── */}
+        {tab === 'ambassadeurs' && (
+          <>
+            <Card className="p-4 mb-6 bg-blue-50/50 border border-blue-200 shadow-none">
+              <p className="text-sm text-blue-800">
+                Les ambassadeurs «&nbsp;Osez l'IA&nbsp;» sont des professionnels volontaires labellisés par l'État
+                pour sensibiliser les PME et ETI à l'intelligence artificielle dans leur région.
+              </p>
+            </Card>
+
+            {loadingAmb ? <LoadingGrid count={6} variant="expert" /> : errorAmb ? <LoadingError message={errorAmb} /> : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                {filteredAmb.map(amb => (
+                  <AmbassadeurCard key={amb.id} ambassadeur={amb} />
+                ))}
+                {filteredAmb.length === 0 && (
+                  <div className="col-span-3 text-center py-12 text-gray-500">
+                    Aucun ambassadeur trouvé pour « {search} »
+                  </div>
+                )}
+              </div>
+            )}
+
+          </>
+        )}
+
+      </div>
+
+      {selectedModal && (
+        <ExpertModal expert={selectedModal} onClose={() => setSelectedModal(null)} />
+      )}
+    </div>
+  )
+}
+
+function ExpertCard({ expert, onClick }: { expert: Expert; onClick: () => void }) {
+  const initials = expert.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+  return (
+    <Card
+      className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group"
+      onClick={onClick}
+    >
+      <div className="flex items-start gap-4 mb-4">
+        <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden border border-gray-200">
+          {expert.logo
+            ? <img src={expert.logo} alt={expert.name} className="w-full h-full object-contain p-1.5" loading="lazy" />
+            : <span className="text-lg font-bold text-gray-400">{initials}</span>
+          }
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-gray-900 group-hover:text-magenta transition-colors truncate">{expert.name}</h3>
+          <p className="text-sm text-violet truncate">{expert.specialty}</p>
+          <div className="flex items-center gap-1 mt-1 text-xs text-gray-500">
+            <MapPin className="w-3 h-3" />{expert.location}
           </div>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${levelColors[expert.level] ?? 'bg-gray-100 text-gray-600'}`}>
+          {expert.level}
+        </span>
+        {expert.sectors.slice(0, 2).map(s => (
+          <span key={s} className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">{s}</span>
+        ))}
+      </div>
+      <p className="text-xs text-gray-500 line-clamp-2 mb-4">{expert.description}</p>
+      <Button size="sm" variant="outline" className="w-full rounded-xl group-hover:border-magenta group-hover:text-magenta transition-colors">
+        Voir le profil
+      </Button>
+    </Card>
+  )
+}
+
+function AmbassadeurCard({ ambassadeur: a }: { ambassadeur: Ambassadeur }) {
+  const initials = `${a.prenom[0] ?? ''}${a.nom[0] ?? ''}`.toUpperCase()
+  return (
+    <Card className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group">
+      <div className="flex items-start gap-4 mb-4">
+        <div className="w-14 h-14 rounded-xl bg-linear-to-br from-violet to-magenta flex items-center justify-center shrink-0">
+          <span className="text-lg font-bold text-white">{initials}</span>
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-gray-900 group-hover:text-violet transition-colors">
+            {a.prenom} {a.nom}
+          </h3>
+          <p className="text-sm text-violet truncate">{a.organisation}</p>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-1.5 mb-4">
+        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${a.type === 'Sectoriel' ? 'bg-orange/10 text-orange' : 'bg-violet/10 text-violet'}`}>
+          {a.type}
+        </span>
+        {a.secteur && (
+          <span className={`text-xs px-2.5 py-1 rounded-full ${secteurColors[a.secteur] ?? 'bg-gray-100 text-gray-600'}`}>
+            {a.secteur}
+          </span>
         )}
       </div>
-    </div>
+      {a.email && (
+        <a href={`mailto:${a.email}`} onClick={e => e.stopPropagation()}>
+          <Button size="sm" variant="outline" className="w-full rounded-xl group-hover:border-violet group-hover:text-violet transition-colors">
+            <Mail className="mr-2 w-3.5 h-3.5" />Contacter
+          </Button>
+        </a>
+      )}
+    </Card>
   )
 }

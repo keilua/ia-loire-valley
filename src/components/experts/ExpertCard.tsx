@@ -24,11 +24,12 @@ export function ExpertCard({ expert }: ExpertCardProps) {
     >
       {/* Header */}
       <div className="flex items-start gap-4">
-        <img
-          src={expert.avatar}
-          alt={expert.name}
-          className="w-14 h-14 rounded-full bg-gray-100 flex-shrink-0"
-        />
+        <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden border border-gray-200">
+          {expert.logo
+            ? <img src={expert.logo} alt={expert.name} className="w-full h-full object-contain p-1.5" loading="lazy" />
+            : <span className="text-lg font-bold text-gray-400">{expert.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}</span>
+          }
+        </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-gray-900 text-base leading-tight">{expert.name}</h3>
           <p className="text-sm text-magenta font-medium mt-0.5 leading-snug">{expert.specialty}</p>

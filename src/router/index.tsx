@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { MainLayout } from '../layouts/MainLayout'
 import { HomePage } from '../pages/HomePage'
 import { ExpertsPage } from '../pages/ExpertsPage'
+import { ExpertRegisterPage } from '../pages/ExpertRegisterPage'
 import { ProjectPage } from '../pages/ProjectPage'
 import { QuizPage } from '../pages/QuizPage'
 import { DiscoverPage } from '../pages/DiscoverPage'
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'experts', element: <ExpertsPage /> },
+      { path: 'experts/register', element: <ExpertRegisterPage /> },
       { path: 'lancer-projet', element: <ProjectPage /> },
       { path: 'quiz', element: <QuizPage /> },
       { path: 'decouvrir-ia', element: <DiscoverPage /> },

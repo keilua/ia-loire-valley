@@ -2,15 +2,30 @@
 export interface Expert {
   id: string
   name: string
-  avatar: string
+  logo?: string
   specialty: string
   location: string
+  address?: string
+  lat?: number
+  lng?: number
   sectors: string[]
   expertise: string[]
   level: 'Conseil' | 'Accompagnement' | 'Formation' | 'Développement'
   description: string
   website?: string
   email?: string
+}
+
+// ─── Ambassadeur ──────────────────────────────────────────────────────────────
+export interface Ambassadeur {
+  id: string
+  prenom: string
+  nom: string
+  organisation: string
+  type: 'Régional' | 'Sectoriel'
+  secteur?: string
+  email?: string
+  commentaires?: string
 }
 
 // ─── Event ────────────────────────────────────────────────────────────────────
