@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import {
   Lightbulb, Rocket, Users, GraduationCap,
-  ArrowRight, Calendar, Newspaper, Sparkles, CheckCircle,
+  ArrowRight, Calendar, Newspaper, Sparkles,
 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
@@ -51,66 +51,43 @@ export function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-white via-purple-50/30 to-pink-50/30">
+      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-white via-purple-50/30 to-pink-50/30">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-linear-to-r from-magenta/10 to-violet/10 rounded-full px-4 py-2 mb-6">
-            <Sparkles className="w-4 h-4 text-magenta" />
-            <span className="text-sm text-violet">Votre porte d'entrée vers l'IA</span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Accélérez vos projets IA<br />en Centre-Val de Loire
-          </h1>
-          <p className="text-xl text-gray-600 mb-10 leading-relaxed">
-            Trouvez un expert, identifiez les aides disponibles ou orientez vos équipes vers les bonnes ressources
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <Link to="/experts">
-              <Button size="lg" className="rounded-full px-8">
-                Trouver un expert <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link to="/lancer-projet">
-              <Button size="lg" variant="outline" className="rounded-full px-8">
-                Démarrer mon projet
-              </Button>
-            </Link>
-          </div>
-          <Link to="/quiz" className="inline-flex items-center text-violet hover:text-magenta transition-colors">
-            <span className="underline">Je ne sais pas par où commencer</span>
-            <ArrowRight className="ml-2 w-4 h-4" />
-          </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Mission */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <Card className="bg-linear-to-br from-gray-50 to-purple-50/20 shadow-lg rounded-3xl p-8 sm:p-12">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">IA Loire Valley vous aide à :</h2>
-              <div className="grid sm:grid-cols-2 gap-4 text-left">
-                {[
-                  { color: 'bg-magenta', text: 'Comprendre les usages de l\'IA' },
-                  { color: 'bg-violet', text: 'Orienter vers des experts qualifiés' },
-                  { color: 'bg-orange', text: 'Identifier des aides et accompagnements' },
-                  { color: 'bg-rose', text: 'Trouver des événements et ressources utiles' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className={`w-6 h-6 rounded-full ${item.color} flex items-center justify-center shrink-0 mt-1`}>
-                      <CheckCircle className="w-3.5 h-3.5 text-white" />
-                    </div>
-                    <p className="text-gray-700">{item.text}</p>
-                  </div>
-                ))}
-              </div>
+          <div className="text-center max-w-4xl mx-auto mb-14">
+            <div className="inline-flex items-center gap-2 bg-linear-to-r from-magenta/10 to-violet/10 rounded-full px-4 py-2 mb-6">
+              <Sparkles className="w-4 h-4 text-magenta" />
+              <span className="text-sm text-violet">Votre porte d'entrée vers l'IA</span>
             </div>
-          </Card>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Accélérez vos projets IA<br />en Centre-Val de Loire
+            </h1>
+            <p className="text-xl text-gray-600 leading-relaxed">
+              Trouvez un expert, identifiez les aides disponibles ou orientez vos équipes vers les bonnes ressources
+            </p>
+          </div>
+
+          {/* Service cards — directly in hero */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {mainServices.map((service, i) => (
+              <Link key={i} to={service.path} className="group">
+                <Card className="h-full p-6 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
+                  <div className={`w-14 h-14 rounded-xl bg-linear-to-br ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <service.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h3>
+                  <p className="text-gray-600 mb-4 leading-relaxed text-sm">{service.description}</p>
+                  <div className="flex items-center text-magenta">
+                    <span className="text-sm font-medium">En savoir plus</span>
+                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Diagnostic CTA */}
+      {/* Bilan d'orientation CTA */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           <div className="bg-linear-to-r from-magenta to-violet rounded-3xl p-8 sm:p-12 text-center text-white shadow-xl">
@@ -121,36 +98,9 @@ export function HomePage() {
             </p>
             <Link to="/quiz">
               <Button size="lg" variant="white" className="rounded-full px-8">
-                Lancer le diagnostic <ArrowRight className="ml-2 w-5 h-5" />
+                Démarrer le bilan d'orientation <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Services */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Comment pouvons-nous vous aider ?</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">Explorez nos services pour accompagner votre transformation IA</p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {mainServices.map((service, i) => (
-              <Link key={i} to={service.path} className="group">
-                <Card className="h-full p-6 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
-                  <div className={`w-14 h-14 rounded-xl bg-linear-to-br ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <service.icon className="w-7 h-7 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h3>
-                  <p className="text-gray-600 mb-4 leading-relaxed">{service.description}</p>
-                  <div className="flex items-center text-magenta">
-                    <span className="text-sm font-medium">En savoir plus</span>
-                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Card>
-              </Link>
-            ))}
           </div>
         </div>
       </section>

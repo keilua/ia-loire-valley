@@ -246,12 +246,12 @@ export function TrainingPage() {
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Besoin d'aide pour choisir ?</h2>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Faites notre diagnostic pour recevoir des recommandations de formations personnalisées selon votre profil et vos objectifs
+              Faites le bilan d'orientation pour recevoir des recommandations de formations personnalisées selon votre profil et vos objectifs
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/quiz">
                 <Button size="lg" className="rounded-full px-8">
-                  Faire le diagnostic <ArrowRight className="ml-2 w-5 h-5" />
+                  Faire le bilan d'orientation <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
               <Link to="/experts">

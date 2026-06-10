@@ -53,7 +53,7 @@ export function ProjectPage() {
         <div className="mt-8 text-center">
           <Link to="/quiz">
             <Button variant="outline" size="lg" className="rounded-full px-8 border-magenta text-magenta">
-              Faire le diagnostic IA à la place
+              Faire le bilan d'orientation à la place
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>

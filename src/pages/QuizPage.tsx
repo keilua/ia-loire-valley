@@ -121,7 +121,7 @@ export function QuizPage() {
           <Link to="/" className="inline-flex items-center text-violet hover:text-magenta mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />Retour à l'accueil
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Diagnostic IA</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Bilan d'orientation</h1>
           <p className="text-lg text-gray-600">Répondez à quelques questions pour recevoir des recommandations personnalisées</p>
         </div>
 
@@ -266,7 +266,7 @@ export function QuizPage() {
                 onClick={() => { setCurrentStep(1); setAnswers({}) }}
                 className="text-sm text-gray-600 hover:text-magenta underline transition-colors"
               >
-                Recommencer le diagnostic
+                Recommencer le bilan
               </button>
             </div>
           </Card>

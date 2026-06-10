@@ -170,7 +170,7 @@ export function DiscoverPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/quiz">
               <Button size="lg" variant="white" className="rounded-full px-8">
-                Faire le diagnostic <ArrowRight className="ml-2 w-5 h-5" />
+                Faire le bilan d'orientation <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
             <Link to="/experts">

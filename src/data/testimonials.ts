@@ -13,7 +13,7 @@ export const testimonials: Testimonial[] = [
     author: 'Sandra Morel',
     role: 'DRH',
     company: 'Groupe Valloire Services (ETI, Indre-et-Loire)',
-    quote: 'Le diagnostic IA nous a vraiment aidés à clarifier nos priorités. On ne savait pas par où commencer, et en 10 minutes on avait une feuille de route claire.',
+    quote: "Le bilan d'orientation nous a vraiment aidés à clarifier nos priorités. On ne savait pas par où commencer, et en 10 minutes on avait une feuille de route claire.",
   },
   {
     id: '3',

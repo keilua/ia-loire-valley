@@ -93,12 +93,13 @@ export function Navbar() {
 
             <NavLink to="/agenda">Agenda</NavLink>
             <NavLink to="/actualites">Actualités</NavLink>
+            <NavLink to="/a-propos">À propos</NavLink>
           </nav>
 
           {/* CTA + Mobile toggle */}
           <div className="flex items-center gap-3">
             <Link to="/quiz" className="hidden md:block">
-              <Button size="sm">Diagnostic IA</Button>
+              <Button size="sm">Bilan d'orientation</Button>
             </Link>
             <button
               className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
@@ -140,10 +141,13 @@ export function Navbar() {
                 <Link to="/actualites" className="block px-3 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50">
                   Actualités
                 </Link>
+                <Link to="/a-propos" className="block px-3 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50">
+                  À propos
+                </Link>
               </div>
               <div className="pt-3">
                 <Link to="/quiz">
-                  <Button className="w-full justify-center">Diagnostic IA</Button>
+                  <Button className="w-full justify-center">Bilan d'orientation</Button>
                 </Link>
               </div>
             </nav>

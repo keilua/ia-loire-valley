@@ -13,7 +13,7 @@ const nav = {
   Ressources: [
     { label: 'Agenda', href: '/agenda' },
     { label: 'Actualités', href: '/actualites' },
-    { label: 'Diagnostic IA', href: '/quiz' },
+    { label: "Bilan d'orientation", href: '/quiz' },
     { label: 'À propos', href: '/a-propos' },
   ],
 }
@@ -66,13 +66,13 @@ export function Footer() {
           <div>
             <p className="text-white font-semibold text-sm mb-4">Prêt à vous lancer ?</p>
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
-              Faites le diagnostic IA en 3 minutes et obtenez des recommandations personnalisées.
+              Faites le bilan d'orientation en 3 minutes et obtenez des recommandations personnalisées.
             </p>
             <Link
               to="/quiz"
               className="inline-flex items-center gap-2 text-sm font-semibold text-magenta hover:text-rose transition-colors"
             >
-              Démarrer le diagnostic
+              Démarrer le bilan
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

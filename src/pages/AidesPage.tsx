@@ -246,12 +246,12 @@ export function AidesPage() {
         <Card className="p-8 sm:p-12 bg-linear-to-br from-gray-50 to-purple-50/30 rounded-3xl text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Vous ne savez pas par où commencer ?</h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Faites le diagnostic IA pour identifier les aides adaptées à votre situation et vos projets.
+            Faites le bilan d'orientation pour identifier les aides adaptées à votre situation et vos projets.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/quiz">
               <Button size="lg" className="rounded-full px-8">
-                Faire le diagnostic <ArrowRight className="ml-2 w-5 h-5" />
+                Faire le bilan d'orientation <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
             <Link to="/lancer-projet">

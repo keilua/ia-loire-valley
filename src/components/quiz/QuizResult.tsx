@@ -77,7 +77,7 @@ export function QuizResult({ state, onReset }: QuizResultProps) {
         className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-600 transition-colors mx-auto"
       >
         <RefreshCw className="w-4 h-4" />
-        Recommencer le diagnostic
+        Recommencer le bilan
       </button>
     </motion.div>
   )
