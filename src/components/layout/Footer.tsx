@@ -5,7 +5,7 @@ import logo from '../../assets/LOGO IA LOIRE VALLEY.png'
 const nav = {
   Services: [
     { label: 'Découvrir l\'IA', href: '/decouvrir-ia' },
-    { label: 'Lancer un projet', href: '/lancer-projet' },
+    { label: 'Diagnostic IA', href: '/lancer-projet' },
     { label: 'Trouver un expert', href: '/experts' },
     { label: 'Se former à l\'IA', href: '/se-former' },
     { label: 'Aides & financements', href: '/aides' },
@@ -25,9 +25,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link to="/" className="inline-flex mb-4">
-              <img src={logo} alt="IA Loire Valley" className="h-8 w-auto" />
-            </Link>
+            <div className="flex items-center gap-4 mb-4">
+              <Link to="/" className="hover:opacity-80 transition-opacity">
+                <img src={logo} alt="IA Loire Valley" className="h-8 w-auto" />
+              </Link>
+              <img src="/logo-jci-orleans.svg" alt="JCI Orléans" className="h-8 w-auto brightness-0 invert" />
+            </div>
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
               La plateforme régionale pour comprendre l'IA, trouver un expert et lancer votre projet en Centre-Val de Loire.
             </p>

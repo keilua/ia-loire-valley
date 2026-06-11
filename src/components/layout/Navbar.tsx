@@ -8,7 +8,7 @@ import { cn } from '../../utils/cn'
 
 const services = [
   { label: 'Découvrir l\'IA', href: '/decouvrir-ia', desc: 'Comprendre les fondamentaux' },
-  { label: 'Lancer un projet', href: '/lancer-projet', desc: 'Structurer votre démarche IA' },
+  { label: 'Diagnostic IA', href: '/lancer-projet', desc: 'Structurer votre démarche IA' },
   { label: 'Trouver un expert', href: '/experts', desc: 'Identifier le bon partenaire' },
   { label: 'Se former à l\'IA', href: '/se-former', desc: 'Monter en compétences' },
   { label: 'Aides & financements', href: '/aides', desc: 'Subventions, prêts, fiscalité' },
@@ -94,13 +94,14 @@ export function Navbar() {
             <NavLink to="/agenda">Agenda</NavLink>
             <NavLink to="/actualites">Actualités</NavLink>
             <NavLink to="/a-propos">À propos</NavLink>
-          </nav>
-
-          {/* CTA + Mobile toggle */}
-          <div className="flex items-center gap-3">
-            <Link to="/quiz" className="hidden md:block">
+            <Link to="/quiz" className="ml-1">
               <Button size="sm">Bilan d'orientation</Button>
             </Link>
+          </nav>
+
+          {/* JCI logo + Mobile toggle */}
+          <div className="flex items-center gap-3">
+            <img src="/logo-jci-orleans.svg" alt="JCI Orléans" className="hidden md:block h-8 w-auto" />
             <button
               className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
               onClick={() => setMobileOpen(v => !v)}

@@ -17,7 +17,7 @@ const mainServices = [
   },
   {
     icon: Rocket,
-    title: 'Lancer un projet',
+    title: 'Diagnostic IA',
     description: 'Bénéficiez d\'un accompagnement pour structurer votre projet IA',
     color: 'from-violet to-magenta',
     path: '/lancer-projet',
