@@ -29,15 +29,18 @@ export interface Ambassadeur {
 }
 
 // ─── Event ────────────────────────────────────────────────────────────────────
-export type EventType = 'Conférence' | 'Atelier' | 'Webinaire' | 'Networking'
+export type EventType = 'Conférence' | 'Atelier' | 'Webinaire' | 'Networking' | 'Café Data'
 
 export interface Event {
   id: string
   title: string
   date: string
+  startTime?: string
+  endTime?: string
   location: string
   type: EventType
   summary: string
+  description?: string
   link?: string
   isPast: boolean
   image?: string
@@ -51,8 +54,11 @@ export interface NewsArticle {
   title: string
   category: NewsCategory
   date: string
+  author?: string
   summary: string
+  body?: unknown[]
   image?: string
+  sourceUrl?: string
   readTime: number
   isHero?: boolean
 }

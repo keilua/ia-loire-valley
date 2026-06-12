@@ -105,61 +105,71 @@ export function NewsPage() {
           <>
             {/* Featured */}
             {featuredArticle && selectedCategory === 'all' && (
-              <Card className="mb-12 overflow-hidden rounded-3xl shadow-lg hover:shadow-xl transition-shadow group cursor-pointer">
-                <div className="grid md:grid-cols-2 gap-0">
-                  <div className="bg-linear-to-br from-magenta to-violet h-64 md:h-auto flex items-center justify-center">
-                    <Newspaper className="w-24 h-24 text-white opacity-20" />
-                  </div>
-                  <div className="p-8 flex flex-col justify-center">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className={`text-xs px-3 py-1 rounded-full ${categoryColors[featuredArticle.category] ?? 'bg-gray-100 text-gray-600'}`}>
-                        {featuredArticle.category}
-                      </span>
-                      <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <Calendar className="w-4 h-4" />
-                        <span>{featuredArticle.date}</span>
+              <Link to={`/actualites/${featuredArticle.id}`}>
+                <Card className="mb-12 overflow-hidden rounded-3xl shadow-lg hover:shadow-xl transition-shadow group cursor-pointer">
+                  <div className="grid md:grid-cols-2 gap-0">
+                    <div className="bg-linear-to-br from-magenta to-violet h-64 md:h-auto flex items-center justify-center">
+                      {featuredArticle.image
+                        ? <img src={featuredArticle.image} alt={featuredArticle.title} className="w-full h-full object-cover" />
+                        : <Newspaper className="w-24 h-24 text-white opacity-20" />
+                      }
+                    </div>
+                    <div className="p-8 flex flex-col justify-center">
+                      <div className="flex items-center gap-3 mb-4">
+                        <span className={`text-xs px-3 py-1 rounded-full ${categoryColors[featuredArticle.category] ?? 'bg-gray-100 text-gray-600'}`}>
+                          {featuredArticle.category}
+                        </span>
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Calendar className="w-4 h-4" />
+                          <span>{featuredArticle.date}</span>
+                        </div>
+                      </div>
+                      <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-magenta transition-colors">
+                        {featuredArticle.title}
+                      </h2>
+                      <p className="text-gray-600 mb-6 leading-relaxed">{featuredArticle.summary}</p>
+                      <div className="flex items-center text-magenta group-hover:gap-2 transition-all">
+                        <span className="font-medium">Lire l'article</span>
+                        <ArrowRight className="w-5 h-5 ml-2" />
                       </div>
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4 group-hover:text-magenta transition-colors">
-                      {featuredArticle.title}
-                    </h2>
-                    <p className="text-gray-600 mb-6 leading-relaxed">{featuredArticle.summary}</p>
-                    <div className="flex items-center text-magenta group-hover:gap-2 transition-all">
-                      <span className="font-medium">Lire l'article</span>
-                      <ArrowRight className="w-5 h-5 ml-2" />
-                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             )}
 
             {/* Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {otherArticles.map(article => (
-                <Card key={article.id} className="overflow-hidden rounded-2xl shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 group cursor-pointer">
-                  <div className="bg-linear-to-br from-magenta/20 to-violet/20 h-48 flex items-center justify-center">
-                    <Newspaper className="w-16 h-16 text-violet opacity-30" />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className={`text-xs px-2 py-1 rounded-full ${categoryColors[article.category] ?? 'bg-gray-100 text-gray-600'}`}>
-                        {article.category}
-                      </span>
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <Calendar className="w-3 h-3" />
-                        <span>{article.date}</span>
+                <Link key={article.id} to={`/actualites/${article.id}`}>
+                  <Card className="overflow-hidden rounded-2xl shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 group cursor-pointer h-full">
+                    <div className="bg-linear-to-br from-magenta/20 to-violet/20 h-48 flex items-center justify-center overflow-hidden">
+                      {article.image
+                        ? <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        : <Newspaper className="w-16 h-16 text-violet opacity-30" />
+                      }
+                    </div>
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className={`text-xs px-2 py-1 rounded-full ${categoryColors[article.category] ?? 'bg-gray-100 text-gray-600'}`}>
+                          {article.category}
+                        </span>
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <Calendar className="w-3 h-3" />
+                          <span>{article.date}</span>
+                        </div>
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-magenta transition-colors line-clamp-2">
+                        {article.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-3">{article.summary}</p>
+                      <div className="flex items-center text-magenta text-sm">
+                        <span className="font-medium">Lire plus</span>
+                        <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-magenta transition-colors line-clamp-2">
-                      {article.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-3">{article.summary}</p>
-                    <div className="flex items-center text-magenta text-sm">
-                      <span className="font-medium">Lire plus</span>
-                      <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               ))}
             </div>
 

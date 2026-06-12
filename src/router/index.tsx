@@ -9,6 +9,7 @@ import { DiscoverPage } from '../pages/DiscoverPage'
 import { TrainingPage } from '../pages/TrainingPage'
 import { AgendaPage } from '../pages/AgendaPage'
 import { NewsPage } from '../pages/NewsPage'
+import { NewsArticlePage } from '../pages/NewsArticlePage'
 import { LegalPage } from '../pages/LegalPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
 import { AidesPage } from '../pages/AidesPage'
@@ -28,6 +29,7 @@ export const router = createBrowserRouter([
       { path: 'se-former', element: <TrainingPage /> },
       { path: 'agenda', element: <AgendaPage /> },
       { path: 'actualites', element: <NewsPage /> },
+      { path: 'actualites/:id', element: <NewsArticlePage /> },
       { path: 'aides', element: <AidesPage /> },
       { path: 'a-propos', element: <AboutPage /> },
       { path: 'mentions-legales', element: <LegalPage /> },

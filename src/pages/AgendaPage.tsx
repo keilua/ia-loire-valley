@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Calendar as CalendarIcon, MapPin, ArrowRight } from 'lucide-react'
+import { ArrowLeft, Calendar as CalendarIcon, MapPin, X, Clock, ExternalLink } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
 import { useEvents } from '../hooks/useData'
 import { LoadingGrid, LoadingError } from '../components/ui/LoadingGrid'
+import type { Event } from '../types'
 
 const typeColors: Record<string, string> = {
   Webinaire: 'bg-magenta/20 text-magenta',
   Atelier: 'bg-violet/20 text-violet',
   Networking: 'bg-orange/20 text-orange',
   Conférence: 'bg-rose/20 text-rose',
+  'Café Data': 'bg-amber-100 text-amber-700',
 }
 
 const typeGradients: Record<string, string> = {
@@ -18,15 +20,103 @@ const typeGradients: Record<string, string> = {
   Atelier: 'from-violet to-magenta',
   Networking: 'from-orange to-magenta',
   Conférence: 'from-rose to-violet',
+  'Café Data': 'from-amber-400 to-orange',
 }
 
 function getGradient(type: string) {
   return typeGradients[type] ?? 'from-magenta to-violet'
 }
 
+// ── Modal ──────────────────────────────────────────────────────────────────────
+
+function EventModal({ event, onClose }: { event: Event; onClose: () => void }) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Image */}
+        {event.image && (
+          <div className="h-52 w-full overflow-hidden rounded-t-3xl">
+            <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
+          </div>
+        )}
+        {!event.image && (
+          <div className={`h-32 w-full rounded-t-3xl bg-linear-to-br ${getGradient(event.type)} flex items-center justify-center`}>
+            <CalendarIcon className="w-12 h-12 text-white/60" />
+          </div>
+        )}
+
+        <div className="p-8">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex-1 pr-4">
+              <span className={`inline-block text-xs px-3 py-1 rounded-full font-medium mb-3 ${typeColors[event.type] ?? 'bg-gray-100 text-gray-600'}`}>
+                {event.type}
+              </span>
+              <h2 className="text-2xl font-bold text-gray-900">{event.title}</h2>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl hover:bg-gray-100 transition-colors shrink-0"
+            >
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
+
+          {/* Infos */}
+          <div className="flex flex-wrap gap-4 mb-6 text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <CalendarIcon className="w-4 h-4 text-magenta" />
+              <span>{event.date}</span>
+            </div>
+            {(event.startTime || event.endTime) && (
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-violet" />
+                <span>{event.startTime}{event.endTime ? ` – ${event.endTime}` : ''}</span>
+              </div>
+            )}
+            {event.location && (
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-orange" />
+                <span>{event.location}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Description */}
+          {event.description && (
+            <p className="text-gray-700 leading-relaxed whitespace-pre-line mb-6">{event.description}</p>
+          )}
+          {!event.description && event.summary && (
+            <p className="text-gray-700 leading-relaxed mb-6">{event.summary}</p>
+          )}
+
+          {/* CTA */}
+          {event.link && (
+            <a href={event.link} target="_blank" rel="noopener noreferrer">
+              <Button size="lg" className="rounded-full px-8 w-full sm:w-auto">
+                <ExternalLink className="mr-2 w-4 h-4" />
+                S'inscrire
+              </Button>
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Page ───────────────────────────────────────────────────────────────────────
+
 export function AgendaPage() {
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'past'>('all')
   const [typeFilter, setTypeFilter] = useState('all')
+  const [selected, setSelected] = useState<Event | null>(null)
 
   const { data: events = [], loading, error } = useEvents()
 
@@ -77,96 +167,38 @@ export function AgendaPage() {
               {filterBtn(typeFilter === 'Conférence', () => setTypeFilter('Conférence'), 'Conférences', 'bg-rose text-white')}
               {filterBtn(typeFilter === 'Atelier', () => setTypeFilter('Atelier'), 'Ateliers', 'bg-violet text-white')}
               {filterBtn(typeFilter === 'Webinaire', () => setTypeFilter('Webinaire'), 'Webinaires', 'bg-magenta text-white')}
+              {filterBtn(typeFilter === 'Café Data', () => setTypeFilter('Café Data'), 'Café Data', 'bg-amber-500 text-white')}
             </div>
           </div>
         </Card>
 
         {loading ? <LoadingGrid count={4} /> : error ? <LoadingError message={error} /> : (
           <>
-            {/* Upcoming */}
+            {/* À venir */}
             {upcoming.length > 0 && filter !== 'past' && (
               <div className="mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">À venir</h2>
-                <div className="space-y-4">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {upcoming.map(event => (
-                    <Card key={event.id} className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group">
-                      <div className="flex flex-col md:flex-row gap-6">
-                        <div className={`shrink-0 w-20 h-20 rounded-xl bg-linear-to-br ${getGradient(event.type)} flex flex-col items-center justify-center text-white`}>
-                          <span className="text-xs font-medium">{event.date?.split(' ')[1]}</span>
-                          <span className="text-2xl font-bold">{event.date?.split(' ')[0]}</span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
-                              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-magenta transition-colors">
-                                {event.title}
-                              </h3>
-                              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-3">
-                                <span className={`px-3 py-1 rounded-full text-xs ${typeColors[event.type] ?? 'bg-gray-100 text-gray-600'}`}>
-                                  {event.type}
-                                </span>
-                                {event.location && (
-                                  <div className="flex items-center gap-1">
-                                    <MapPin className="w-4 h-4 text-magenta" />
-                                    <span>{event.location}</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all shrink-0 ml-4" />
-                          </div>
-                          {event.summary && <p className="text-gray-600 mb-4 leading-relaxed">{event.summary}</p>}
-                          <div className="flex items-center justify-between">
-                            <span />
-                            {event.link && (
-                              <a href={event.link} target="_blank" rel="noopener noreferrer">
-                                <Button size="sm" className="rounded-xl">Voir l'événement</Button>
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </Card>
+                    <EventCard key={event.id} event={event} onClick={() => setSelected(event)} />
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Past */}
+            {/* Passés */}
             {past.length > 0 && filter !== 'upcoming' && (
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Événements récents</h2>
-                <div className="space-y-4">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {past.map(event => (
-                    <Card key={event.id} className="p-6 shadow-sm opacity-75 hover:opacity-100 transition-opacity">
-                      <div className="flex flex-col md:flex-row gap-6">
-                        <div className={`shrink-0 w-20 h-20 rounded-xl bg-linear-to-br ${getGradient(event.type)} flex flex-col items-center justify-center text-white opacity-60`}>
-                          <span className="text-xs font-medium">{event.date?.split(' ')[1]}</span>
-                          <span className="text-2xl font-bold">{event.date?.split(' ')[0]}</span>
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
-                          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-3">
-                            <span className={`px-3 py-1 rounded-full text-xs ${typeColors[event.type] ?? 'bg-gray-100 text-gray-600'}`}>
-                              {event.type}
-                            </span>
-                            {event.location && (
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4 text-magenta" />
-                                <span>{event.location}</span>
-                              </div>
-                            )}
-                          </div>
-                          {event.summary && <p className="text-gray-600">{event.summary}</p>}
-                        </div>
-                      </div>
-                    </Card>
+                    <EventCard key={event.id} event={event} onClick={() => setSelected(event)} past />
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Empty */}
+            {/* Vide */}
             {filtered.length === 0 && (
               <div className="text-center py-12">
                 <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
@@ -182,6 +214,61 @@ export function AgendaPage() {
           </>
         )}
       </div>
+
+      {selected && <EventModal event={selected} onClose={() => setSelected(null)} />}
     </div>
+  )
+}
+
+// ── Card ───────────────────────────────────────────────────────────────────────
+
+function EventCard({ event, onClick, past = false }: { event: Event; onClick: () => void; past?: boolean }) {
+  return (
+    <Card
+      className={`overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group ${past ? 'opacity-70 hover:opacity-100' : ''}`}
+      onClick={onClick}
+    >
+      {/* Image ou gradient */}
+      {event.image ? (
+        <div className="h-40 overflow-hidden">
+          <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        </div>
+      ) : (
+        <div className={`h-40 bg-linear-to-br ${getGradient(event.type)} flex items-center justify-center`}>
+          <CalendarIcon className="w-10 h-10 text-white/50" />
+        </div>
+      )}
+
+      <div className="p-5">
+        {/* Badge type */}
+        <span className={`inline-block text-xs px-2.5 py-1 rounded-full font-medium mb-3 ${typeColors[event.type] ?? 'bg-gray-100 text-gray-600'}`}>
+          {event.type}
+        </span>
+
+        {/* Titre */}
+        <h3 className="font-bold text-gray-900 mb-2 group-hover:text-magenta transition-colors line-clamp-2">
+          {event.title}
+        </h3>
+
+        {/* Date + lieu */}
+        <div className="flex flex-col gap-1.5 mb-3 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5">
+            <CalendarIcon className="w-3.5 h-3.5 text-magenta shrink-0" />
+            <span>{event.date}{event.startTime ? ` · ${event.startTime}${event.endTime ? `–${event.endTime}` : ''}` : ''}</span>
+          </div>
+          {event.location && (
+            <div className="flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-violet shrink-0" />
+              <span className="truncate">{event.location}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Résumé */}
+        {event.summary && (
+          <p className="text-sm text-gray-600 line-clamp-3">{event.summary}</p>
+        )}
+      </div>
+    </Card>
   )
 }

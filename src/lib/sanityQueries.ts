@@ -5,9 +5,12 @@ export const EVENTS_QUERY = `
   "id": _id,
   title,
   date,
+  startTime,
+  endTime,
   location,
   type,
   summary,
+  description,
   link,
   "image": image.asset->url
 }
@@ -38,8 +41,11 @@ export const NEWS_QUERY = `
   title,
   category,
   date,
+  author,
   summary,
+  body,
   "image": image.asset->url,
+  sourceUrl,
   readTime,
   isHero
 }

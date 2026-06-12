@@ -2,7 +2,7 @@ import { defineType, defineField } from 'sanity'
 
 export const eventSchema = defineType({
   name: 'event',
-  title: 'Événements',
+  title: 'Agenda',
   type: 'document',
   fields: [
     defineField({
@@ -17,6 +17,18 @@ export const eventSchema = defineType({
       type: 'date',
       options: { dateFormat: 'DD/MM/YYYY' },
       validation: Rule => Rule.required(),
+    }),
+    defineField({
+      name: 'startTime',
+      title: 'Heure de début',
+      type: 'string',
+      placeholder: 'ex: 9h00',
+    }),
+    defineField({
+      name: 'endTime',
+      title: 'Heure de fin',
+      type: 'string',
+      placeholder: 'ex: 11h00',
     }),
     defineField({
       name: 'location',
@@ -34,27 +46,34 @@ export const eventSchema = defineType({
           { title: 'Atelier', value: 'Atelier' },
           { title: 'Webinaire', value: 'Webinaire' },
           { title: 'Networking', value: 'Networking' },
+          { title: 'Café Data', value: 'Café Data' },
         ],
       },
       validation: Rule => Rule.required(),
     }),
     defineField({
       name: 'summary',
-      title: 'Résumé',
+      title: 'Résumé (affiché sur la carte)',
       type: 'text',
       rows: 3,
       validation: Rule => Rule.required(),
     }),
     defineField({
-      name: 'link',
-      title: 'Lien (inscription / programme)',
-      type: 'url',
+      name: 'description',
+      title: 'Description complète',
+      type: 'text',
+      rows: 10,
     }),
     defineField({
       name: 'image',
       title: 'Image',
       type: 'image',
       options: { hotspot: true },
+    }),
+    defineField({
+      name: 'link',
+      title: 'Lien d\'inscription',
+      type: 'url',
     }),
   ],
   preview: {
