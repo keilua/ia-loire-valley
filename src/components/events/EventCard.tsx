@@ -6,12 +6,12 @@ interface EventCardProps {
   event: Event
 }
 
-const typeVariant: Record<Event['type'], 'magenta' | 'violet' | 'orange' | 'rose'> = {
+const typeVariant: Record<Event['type'], 'magenta' | 'violet' | 'orange' | 'rose' | 'amber'> = {
   'Conférence': 'magenta',
   'Atelier': 'violet',
   'Webinaire': 'orange',
   'Networking': 'rose',
-  'Café Data': 'magenta'
+  'Café Data': 'amber',
 }
 
 function formatDate(dateStr: string) {

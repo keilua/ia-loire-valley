@@ -1,4 +1,5 @@
-import { useState, useRef, KeyboardEvent } from 'react'
+import { useState, useRef } from 'react'
+import type { KeyboardEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,7 +22,7 @@ const schema = z.object({
   name: z.string().min(2, 'Nom requis'),
   email: z.string().email('Email invalide'),
   specialty: z.string().min(3, 'Spécialité requise'),
-  level: z.enum(['Conseil', 'Accompagnement', 'Formation', 'Développement'], { required_error: 'Type requis' }),
+  level: z.enum(['Conseil', 'Accompagnement', 'Formation', 'Développement'], { message: 'Type requis' }),
   location: z.string().min(1, 'Ville requise'),
   address: z.string().optional(),
   sectors: z.array(z.string()).min(1, 'Sélectionnez au moins un secteur'),
