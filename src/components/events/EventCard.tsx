@@ -11,6 +11,7 @@ const typeVariant: Record<Event['type'], 'magenta' | 'violet' | 'orange' | 'rose
   'Atelier': 'violet',
   'Webinaire': 'orange',
   'Networking': 'rose',
+  'Café Data': 'magenta'
 }
 
 function formatDate(dateStr: string) {
