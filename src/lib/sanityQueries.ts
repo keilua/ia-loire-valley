@@ -43,7 +43,13 @@ export const NEWS_QUERY = `
   date,
   author,
   summary,
-  body,
+  body[]{
+    ...,
+    _type == "image" => {
+      ...,
+      "asset": asset->{url, metadata}
+    }
+  },
   "image": image.asset->url,
   sourceUrl,
   readTime,
