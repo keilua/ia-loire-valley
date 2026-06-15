@@ -62,7 +62,7 @@ export function ExpertsPage() {
   }, [ambassadeurs, search])
 
   return (
-    <div className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <div className="min-h-screen pt-16 sm:pt-24 pb-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
@@ -77,35 +77,35 @@ export function ExpertsPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-8 p-1 bg-white rounded-2xl shadow-sm w-fit border border-gray-100">
+        <div className="grid grid-cols-2 gap-2 mb-8 p-1 bg-white rounded-2xl shadow-sm border border-gray-100">
           <button
             onClick={() => { setTab('experts'); setSearch('') }}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
               tab === 'experts'
                 ? 'bg-linear-to-r from-magenta to-violet text-white shadow-sm'
                 : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            <Building2 className="w-4 h-4" />
-            Experts IA
+            <Building2 className="w-4 h-4 shrink-0" />
+            <span>Experts IA</span>
             {experts.length > 0 && (
-              <span className={`text-xs px-2 py-0.5 rounded-full ${tab === 'experts' ? 'bg-white/20' : 'bg-gray-100'}`}>
+              <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${tab === 'experts' ? 'bg-white/20' : 'bg-gray-100'}`}>
                 {experts.length}
               </span>
             )}
           </button>
           <button
             onClick={() => { setTab('ambassadeurs'); setSearch('') }}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
+            className={`flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
               tab === 'ambassadeurs'
                 ? 'bg-linear-to-r from-violet to-magenta text-white shadow-sm'
                 : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            <Users className="w-4 h-4" />
-            Ambassadeurs IA
+            <Users className="w-4 h-4 shrink-0" />
+            <span className="truncate">Ambassadeurs</span>
             {ambassadeurs.length > 0 && (
-              <span className={`text-xs px-2 py-0.5 rounded-full ${tab === 'ambassadeurs' ? 'bg-white/20' : 'bg-gray-100'}`}>
+              <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${tab === 'ambassadeurs' ? 'bg-white/20' : 'bg-gray-100'}`}>
                 {ambassadeurs.length}
               </span>
             )}
@@ -143,7 +143,7 @@ export function ExpertsPage() {
         {tab === 'experts' && (
           <>
             {loadingExperts ? <LoadingGrid count={6} variant="expert" /> : errorExperts ? <LoadingError message={errorExperts} /> : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                 {filteredExperts.map(expert => (
                   <ExpertCard key={expert.id} expert={expert} onClick={() => setSelectedModal(expert)} />
                 ))}
@@ -180,7 +180,7 @@ export function ExpertsPage() {
             </Card>
 
             {loadingAmb ? <LoadingGrid count={6} variant="expert" /> : errorAmb ? <LoadingError message={errorAmb} /> : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                 {filteredAmb.map(amb => (
                   <AmbassadeurCard key={amb.id} ambassadeur={amb} />
                 ))}

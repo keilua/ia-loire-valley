@@ -898,7 +898,7 @@ export function ProjectPage() {
   if (submitted) return <SuccessScreen data={data} />
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16">
+    <div className="min-h-screen bg-gray-50 pt-4 sm:pt-10">
       {/* Barre de progression */}
       <div className="fixed top-16 left-0 right-0 z-40 h-1.5 bg-gray-200">
         <div
@@ -913,19 +913,19 @@ export function ProjectPage() {
         </Link>
 
         {/* Catégorie + compteur */}
-        <div className="flex items-center justify-between mb-6">
-          <span className="inline-flex items-center bg-violet/10 text-violet text-xs font-bold tracking-widest uppercase rounded-full px-4 py-1.5">
+        <div className="flex items-center justify-between mb-6 gap-3">
+          <span className="inline-flex items-center bg-violet/10 text-violet text-xs font-bold tracking-wider uppercase rounded-full px-3 py-1.5 min-w-0 truncate">
             {STEPS[step].category}
           </span>
           {step > 0 && (
-            <span className="text-sm text-gray-400 font-medium">
+            <span className="text-sm text-gray-400 font-medium shrink-0">
               ÉTAPE {step} / {totalSteps - 1}
             </span>
           )}
         </div>
 
         {/* Carte contenu */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-8">
           {step === 0 && <StepIntro />}
           {step === 1 && <StepFicheStructure data={data} setData={setData} toggleCheckbox={toggleCheckbox} />}
           {step === 2 && <StepStrategieNumerique data={data} setData={setData} toggleCheckbox={toggleCheckbox} />}

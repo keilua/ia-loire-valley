@@ -49,32 +49,33 @@ export function HomePage() {
   const previewEvents = events.slice(0, 3)
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-hidden">
+
       {/* Hero */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-white via-purple-50/30 to-pink-50/30">
+      <section className="pt-10 sm:pt-20 lg:pt-32 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-white via-purple-50/30 to-pink-50/30">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-4xl mx-auto mb-14">
+          <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
             <div className="inline-flex items-center gap-2 bg-linear-to-r from-magenta/10 to-violet/10 rounded-full px-4 py-2 mb-6">
               <Sparkles className="w-4 h-4 text-magenta" />
               <span className="text-sm text-violet">Votre porte d'entrée vers l'IA</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Accélérez vos projets IA<br />en Centre-Val de Loire
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
+              Accélérez vos projets IA en Centre-Val de Loire
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-base sm:text-xl text-gray-600 leading-relaxed">
               Trouvez un expert, identifiez les aides disponibles ou orientez vos équipes vers les bonnes ressources
             </p>
           </div>
 
-          {/* Service cards — directly in hero */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Service cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {mainServices.map((service, i) => (
               <Link key={i} to={service.path} className="group">
-                <Card className="h-full p-6 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
-                  <div className={`w-14 h-14 rounded-xl bg-linear-to-br ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <service.icon className="w-7 h-7 text-white" />
+                <Card className="h-full p-5 sm:p-6 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-linear-to-br ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <service.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h3>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">{service.title}</h3>
                   <p className="text-gray-600 mb-4 leading-relaxed text-sm">{service.description}</p>
                   <div className="flex items-center text-magenta">
                     <span className="text-sm font-medium">En savoir plus</span>
@@ -88,16 +89,16 @@ export function HomePage() {
       </section>
 
       {/* Bilan d'orientation CTA */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-linear-to-r from-magenta to-violet rounded-3xl p-8 sm:p-12 text-center text-white shadow-xl">
+          <div className="bg-linear-to-r from-magenta to-violet rounded-3xl p-6 sm:p-12 text-center text-white shadow-xl overflow-hidden">
             <Sparkles className="w-12 h-12 mx-auto mb-4 opacity-90" />
-            <h2 className="text-3xl font-bold mb-4">Pas sûr de votre besoin ?</h2>
-            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">Pas sûr de votre besoin ?</h2>
+            <p className="text-base sm:text-lg mb-8 opacity-90 max-w-2xl mx-auto">
               Répondez à quelques questions et recevez des recommandations personnalisées pour votre projet IA
             </p>
-            <Link to="/quiz">
-              <Button size="lg" variant="white" className="rounded-full px-8">
+            <Link to="/quiz" className="block sm:inline-block">
+              <Button size="lg" variant="white" className="rounded-full px-6 sm:px-8 w-full sm:w-auto">
                 Démarrer le bilan d'orientation <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
@@ -106,28 +107,29 @@ export function HomePage() {
       </section>
 
       {/* Events & News */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12">
+
           {/* Events */}
           <div>
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-magenta/10 flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-magenta" />
+            <div className="flex items-center justify-between gap-2 mb-6 sm:mb-8">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-magenta/10 flex items-center justify-center shrink-0">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-magenta" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Événements à venir</h2>
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Événements à venir</h2>
               </div>
-              <Link to="/agenda" className="text-sm text-violet hover:text-magenta flex items-center gap-1 transition-colors">
+              <Link to="/agenda" className="shrink-0 text-sm text-violet hover:text-magenta flex items-center gap-1 transition-colors">
                 Voir tout <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {previewEvents.length > 0 ? previewEvents.map((event, i) => (
-                <Card key={i} className="p-5 hover:shadow-md transition-shadow border border-gray-100">
-                  <div className="flex gap-4">
-                    <div className="shrink-0 w-16 h-16 rounded-lg bg-linear-to-br from-magenta/10 to-violet/10 flex flex-col items-center justify-center">
+                <Card key={i} className="p-4 sm:p-5 hover:shadow-md transition-shadow border border-gray-100">
+                  <div className="flex gap-3 sm:gap-4">
+                    <div className="shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-linear-to-br from-magenta/10 to-violet/10 flex flex-col items-center justify-center">
                       <span className="text-xs text-violet font-medium">{event.date?.split(' ')[0]}</span>
-                      <span className="text-lg font-bold text-magenta">{event.date?.split(' ')[1]}</span>
+                      <span className="text-base sm:text-lg font-bold text-magenta">{event.date?.split(' ')[1]}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
@@ -149,22 +151,22 @@ export function HomePage() {
 
           {/* News */}
           <div>
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-violet/10 flex items-center justify-center">
-                  <Newspaper className="w-5 h-5 text-violet" />
+            <div className="flex items-center justify-between gap-2 mb-6 sm:mb-8">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-violet/10 flex items-center justify-center shrink-0">
+                  <Newspaper className="w-4 h-4 sm:w-5 sm:h-5 text-violet" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Actualités IA</h2>
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Actualités IA</h2>
               </div>
-              <Link to="/actualites" className="text-sm text-violet hover:text-magenta flex items-center gap-1 transition-colors">
+              <Link to="/actualites" className="shrink-0 text-sm text-violet hover:text-magenta flex items-center gap-1 transition-colors">
                 Voir tout <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {recentNews.map((news, i) => (
-                <Card key={i} className="p-5 hover:shadow-md transition-shadow border border-gray-100 group cursor-pointer">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs px-2 py-1 bg-rose/20 text-violet rounded-full">{news.category}</span>
+                <Card key={i} className="p-4 sm:p-5 hover:shadow-md transition-shadow border border-gray-100 group cursor-pointer">
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <span className="text-xs px-2 py-1 bg-rose/20 text-violet rounded-full shrink-0">{news.category}</span>
                     <span className="text-xs text-gray-500">{news.date}</span>
                   </div>
                   <h4 className="font-semibold text-gray-900 group-hover:text-magenta transition-colors text-sm">{news.title}</h4>
@@ -172,6 +174,7 @@ export function HomePage() {
               ))}
             </div>
           </div>
+
         </div>
       </section>
     </div>
