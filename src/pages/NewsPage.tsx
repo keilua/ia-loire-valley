@@ -59,7 +59,7 @@ export function NewsPage() {
             ) : (
               <form
                 onSubmit={e => { e.preventDefault(); setSubscribed(true) }}
-                className="flex gap-3 w-full md:w-auto"
+                className="flex flex-col sm:flex-row gap-3 w-full md:w-auto"
               >
                 <Input
                   type="email"
@@ -67,9 +67,9 @@ export function NewsPage() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
-                  className="bg-white/90 border-none min-w-55 text-gray-900 placeholder:text-gray-500"
+                  className="bg-white/90 border-none w-full sm:min-w-55 text-gray-900 placeholder:text-gray-500"
                 />
-                <Button type="submit" variant="white" className="rounded-xl whitespace-nowrap">
+                <Button type="submit" variant="white" className="rounded-xl whitespace-nowrap w-full sm:w-auto">
                   S'inscrire
                 </Button>
               </form>

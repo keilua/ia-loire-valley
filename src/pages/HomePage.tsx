@@ -121,21 +121,27 @@ export function HomePage() {
             </div>
             <div className="space-y-3 sm:space-y-4">
               {previewEvents.length > 0 ? previewEvents.map((event, i) => (
-                <Card key={i} className="p-4 sm:p-5 hover:shadow-md transition-shadow border border-gray-100">
-                  <div className="flex gap-3 sm:gap-4">
-                    <div className="shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-lg bg-linear-to-br from-magenta/10 to-violet/10 flex flex-col items-center justify-center">
-                      <span className="text-xs text-violet font-medium">{event.date?.split(' ')[0]}</span>
-                      <span className="text-base sm:text-lg font-bold text-magenta">{event.date?.split(' ')[1]}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs px-2 py-1 bg-orange/20 text-orange rounded-full shrink-0">{event.type}</span>
-                        <span className="text-xs text-gray-500 truncate">{event.location}</span>
+                <Link key={i} to="/agenda" className="block">
+                  <Card className="p-4 sm:p-5 hover:shadow-md transition-shadow border border-gray-100 group cursor-pointer">
+                    <div className="flex gap-3 sm:gap-4">
+                      <div className="shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-linear-to-br from-magenta/10 to-violet/10">
+                        {event.image
+                          ? <img src={event.image} alt={event.title} className="w-full h-full object-cover" loading="lazy" />
+                          : <div className="w-full h-full flex flex-col items-center justify-center">
+                              <Calendar className="w-5 h-5 text-magenta/50" />
+                            </div>
+                        }
                       </div>
-                      <h4 className="font-semibold text-gray-900 text-sm line-clamp-2">{event.title}</h4>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs px-2 py-1 bg-orange/20 text-orange rounded-full shrink-0">{event.type}</span>
+                          <span className="text-xs text-gray-500 truncate">{event.location}</span>
+                        </div>
+                        <h4 className="font-semibold text-gray-900 group-hover:text-magenta transition-colors text-sm line-clamp-2">{event.title}</h4>
+                      </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               )) : (
                 <Card className="p-6 border border-gray-100 text-center">
                   <p className="text-gray-500 text-sm mb-2">Consultez l'agenda pour les prochains événements.</p>
