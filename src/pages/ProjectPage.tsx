@@ -393,6 +393,7 @@ function FieldTextarea({ label, value, onChange, rows = 4 }: {
 const RADIO_COLS: RadioValue[] = ['Non utilisé', 'Envisagé', 'Opérationnel']
 
 const RADIO_COL_STYLES: Record<RadioValue, { active: string; inactive: string }> = {
+  '': { active: '', inactive: '' },
   'Non utilisé': {
     active: 'border-gray-400 bg-gray-100 text-gray-700 font-semibold',
     inactive: 'border-gray-200 bg-white text-gray-500 hover:border-gray-300',
