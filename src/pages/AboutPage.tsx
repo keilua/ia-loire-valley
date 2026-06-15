@@ -7,8 +7,8 @@ import { usePartenaires, useTeam } from '../hooks/useData'
 const values = [
   {
     icon: Target,
-    title: 'Orientation, pas vente',
-    description: 'Nous sommes un tiers de confiance neutre. Notre mission est de vous orienter vers les bons acteurs, sans intérêt commercial.',
+    title: 'Accompagnement',
+    description: 'IA Loire Valley vous accompagne dans vos projets, vous conseille et vous oriente vers les professionnels adaptés à vos besoins.',
     color: 'from-magenta to-rose',
   },
   {
@@ -45,9 +45,24 @@ export function AboutPage() {
           </Link>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">À propos</h1>
           <p className="text-lg text-gray-600 max-w-3xl">
-            IA Loire Valley est la plateforme régionale d'orientation et d'accompagnement à l'intelligence artificielle en Centre-Val de Loire.
+            IA Loire Valley est une plateforme numérique régionale d'orientation et d'accompagnement à l'Intelligence Artificielle en région Centre-Val de Loire.
           </p>
         </div>
+
+        {/* Qui sommes-nous */}
+        <Card className="p-8 mb-10 shadow-sm">
+          <div className="flex items-start gap-6">
+            <div className="w-14 h-14 rounded-2xl gradient-brand flex items-center justify-center shrink-0">
+              <Users className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">Qui sommes-nous ?</h2>
+              <p className="text-gray-600 leading-relaxed">
+                Le <strong className="text-gray-800">LAB'IA Loire Valley</strong>, centre de ressources partagées autour de la donnée, s'est associé à <strong className="text-gray-800">La Jeune Chambre Économique d'Orléans (JCEO)</strong>, incubateur de leaders citoyens sur le territoire orléanais, pour faire évoluer la plateforme et mieux accompagner les entreprises et acteurs du territoire dans la compréhension et l'appropriation des outils IA. Dans le cadre de ce partenariat, la JCEO a travaillé avec les étudiants de <strong className="text-gray-800">CODA</strong>, école supérieure d'informatique, pour créer une nouvelle plateforme qui porte l'ambition de devenir le guichet unique d'entrée IA pour les entrepreneurs et acteurs de la Région Centre-Val de Loire.
+              </p>
+            </div>
+          </div>
+        </Card>
 
         {/* Mission */}
         <Card className="p-8 mb-10 shadow-sm">
