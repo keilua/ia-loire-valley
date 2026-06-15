@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
-import { useEvents } from '../hooks/useData'
+import { useEvents, useNews } from '../hooks/useData'
 
 const mainServices = [
   {
@@ -38,15 +38,11 @@ const mainServices = [
   },
 ]
 
-const recentNews = [
-  { category: 'IA Générative', date: '12 Avril 2026', title: 'Les nouveaux usages de l\'IA générative en entreprise' },
-  { category: 'Territoire', date: '10 Avril 2026', title: 'La région Centre-Val de Loire investit dans l\'IA' },
-  { category: 'Innovation', date: '8 Avril 2026', title: 'Retour sur le dernier salon IA & Tech' },
-]
-
 export function HomePage() {
   const { data: events = [] } = useEvents()
+  const { data: allNews = [] } = useNews()
   const previewEvents = events.slice(0, 3)
+  const previewNews = allNews.slice(0, 3)
 
   return (
     <div className="min-h-screen overflow-x-hidden">
@@ -117,7 +113,7 @@ export function HomePage() {
                 <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-magenta/10 flex items-center justify-center shrink-0">
                   <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-magenta" />
                 </div>
-                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Événements à venir</h2>
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Agenda</h2>
               </div>
               <Link to="/agenda" className="shrink-0 text-sm text-violet hover:text-magenta flex items-center gap-1 transition-colors">
                 Voir tout <ArrowRight className="w-4 h-4" />
@@ -144,6 +140,7 @@ export function HomePage() {
                 <Card className="p-6 border border-gray-100 text-center">
                   <p className="text-gray-500 text-sm mb-2">Consultez l'agenda pour les prochains événements.</p>
                   <Link to="/agenda" className="text-magenta text-sm font-medium hover:underline">Voir l'agenda →</Link>
+
                 </Card>
               )}
             </div>
@@ -163,15 +160,22 @@ export function HomePage() {
               </Link>
             </div>
             <div className="space-y-3 sm:space-y-4">
-              {recentNews.map((news, i) => (
-                <Card key={i} className="p-4 sm:p-5 hover:shadow-md transition-shadow border border-gray-100 group cursor-pointer">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="text-xs px-2 py-1 bg-rose/20 text-violet rounded-full shrink-0">{news.category}</span>
-                    <span className="text-xs text-gray-500">{news.date}</span>
-                  </div>
-                  <h4 className="font-semibold text-gray-900 group-hover:text-magenta transition-colors text-sm">{news.title}</h4>
+              {previewNews.length > 0 ? previewNews.map(news => (
+                <Link key={news.id} to="/actualites" className="block">
+                  <Card className="p-4 sm:p-5 hover:shadow-md transition-shadow border border-gray-100 group cursor-pointer">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <span className="text-xs px-2 py-1 bg-rose/20 text-violet rounded-full shrink-0">{news.category}</span>
+                      <span className="text-xs text-gray-500">{news.date}</span>
+                    </div>
+                    <h4 className="font-semibold text-gray-900 group-hover:text-magenta transition-colors text-sm">{news.title}</h4>
+                  </Card>
+                </Link>
+              )) : (
+                <Card className="p-6 border border-gray-100 text-center">
+                  <p className="text-gray-500 text-sm mb-2">Consultez les actualités pour les dernières nouvelles.</p>
+                  <Link to="/actualites" className="text-magenta text-sm font-medium hover:underline">Voir les actualités →</Link>
                 </Card>
-              ))}
+              )}
             </div>
           </div>
 
