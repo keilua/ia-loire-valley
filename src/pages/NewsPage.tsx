@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Newspaper, ArrowRight, Calendar, Tag } from 'lucide-react'
-import { Button } from '../components/ui/Button'
-import { Input } from '../components/ui/input'
+import { ArrowLeft, Newspaper, ArrowRight, Calendar, Tag, ExternalLink } from 'lucide-react'
 import { Card } from '../components/ui/card'
 import { useNews } from '../hooks/useData'
 import { LoadingGrid, LoadingError } from '../components/ui/LoadingGrid'
@@ -20,8 +18,6 @@ const categoryColors: Record<string, string> = {
 
 
 export function NewsPage() {
-  const [email, setEmail] = useState('')
-  const [subscribed, setSubscribed] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('all')
 
   const { data: articles = [], loading, error } = useNews()
@@ -46,35 +42,32 @@ export function NewsPage() {
           </p>
         </div>
 
-        {/* Newsletter */}
+        {/* LinkedIn info */}
         <Card className="p-8 mb-12 bg-linear-to-br from-magenta to-violet rounded-3xl text-white">
-          <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="flex flex-col md:flex-row items-start gap-6">
             <div className="flex-1">
-              <h2 className="text-2xl font-bold mb-2">Newsletter IA Loire Valley</h2>
-              <p className="opacity-90">Recevez chaque semaine les actualités IA directement dans votre boîte mail</p>
+              <p className="text-sm font-semibold uppercase tracking-wider opacity-70 mb-2">Depuis octobre 2025</p>
+              <h2 className="text-2xl font-bold mb-3">Suivez-nous sur LinkedIn</h2>
+              <p className="opacity-90 leading-relaxed mb-4">
+                La newsletter est remplacée par une info au fil de l'eau via LinkedIn, gérée par la <strong>MARMIT</strong>.
+              </p>
+              <p className="opacity-90 leading-relaxed text-sm">
+                Vous connaissez d'autres informations sur l'IA en région Centre-Val de Loire ?<br />
+                Indiquez-les en commentaire des posts LinkedIn ou signalez-les par mail à{' '}
+                <a href="mailto:contact@marmit.fr" className="underline hover:opacity-80 transition-opacity font-medium">
+                  contact@marmit.fr
+                </a>
+              </p>
             </div>
-            {subscribed ? (
-              <div className="bg-white/20 rounded-2xl px-6 py-3 text-white font-semibold">
-                ✓ Inscription confirmée !
-              </div>
-            ) : (
-              <form
-                onSubmit={e => { e.preventDefault(); setSubscribed(true) }}
-                className="flex flex-col sm:flex-row gap-3 w-full md:w-auto"
-              >
-                <Input
-                  type="email"
-                  placeholder="Votre email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                  className="bg-white/90 border-none w-full sm:min-w-55 text-gray-900 placeholder:text-gray-500"
-                />
-                <Button type="submit" variant="white" className="rounded-xl whitespace-nowrap w-full sm:w-auto">
-                  S'inscrire
-                </Button>
-              </form>
-            )}
+            <a
+              href="https://www.linkedin.com/company/marmit/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 bg-white text-violet font-semibold px-6 py-3 rounded-2xl hover:bg-white/90 transition-colors flex items-center gap-2 w-full md:w-auto justify-center"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Suivre la MARMIT
+            </a>
           </div>
         </Card>
 

@@ -126,7 +126,7 @@ export function AidesPage() {
           <p className="text-gray-500 mb-6">Annuaires et guides pour trouver d'autres aides adaptées à votre situation.</p>
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { name: 'AI Partner', desc: 'Guide complet des aides publiques IA pour PME et ETI en 2025', url: 'https://ai-partner.fr/fr/blog/aides-publiques-pour-financer-les-projets-dintelligence-artificielle-en-2025-pour-les-pme-et-eti' },
+              { name: 'Aides Entreprises', desc: 'Annuaire complet des aides publiques pour les entreprises françaises', url: 'https://www.aides-entreprises.fr/' },
               { name: 'France Num', desc: 'Moteur de recherche officiel des aides à la transformation numérique', url: 'https://www.francenum.gouv.fr/aides-financieres/trouver-une-aide-financiere' },
               { name: 'Les-Aides.fr', desc: 'Annuaire national de toutes les aides publiques aux entreprises', url: 'https://les-aides.fr' },
             ].map((r, i) => (

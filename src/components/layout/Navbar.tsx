@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, ChevronDown } from 'lucide-react'
+import { Menu, X, ChevronDown, Lightbulb, Rocket, Users, GraduationCap, Euro } from 'lucide-react'
 import logo from '../../assets/LOGO IA LOIRE VALLEY.png'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/Button'
 import { cn } from '../../utils/cn'
 
 const services = [
-  { label: 'Découvrir l\'IA', href: '/decouvrir-ia', desc: 'Comprendre les fondamentaux' },
-  { label: 'Diagnostic IA', href: '/lancer-projet', desc: 'Structurer votre démarche IA' },
-  { label: 'Trouver un expert', href: '/experts', desc: 'Identifier le bon partenaire' },
-  { label: 'Se former à l\'IA', href: '/se-former', desc: 'Monter en compétences' },
-  { label: 'Aides & financements', href: '/aides', desc: 'Subventions, prêts, fiscalité' },
+  { label: 'Découvrir l\'IA', href: '/decouvrir-ia', desc: 'Comprendre les fondamentaux', icon: Lightbulb, color: 'from-magenta to-rose' },
+  { label: 'Diagnostic IA', href: '/lancer-projet', desc: 'Structurer votre démarche IA', icon: Rocket, color: 'from-violet to-magenta' },
+  { label: 'Trouver un expert', href: '/experts', desc: 'Identifier le bon partenaire', icon: Users, color: 'from-orange to-magenta' },
+  { label: 'Se former à l\'IA', href: '/se-former', desc: 'Monter en compétences', icon: GraduationCap, color: 'from-rose to-violet' },
+  { label: 'Aides & financements', href: '/aides', desc: 'Subventions, prêts, fiscalité', icon: Euro, color: 'from-violet to-rose' },
 ]
 
 export function Navbar() {
@@ -77,12 +77,17 @@ export function Navbar() {
                         <Link
                           key={service.href}
                           to={service.href}
-                          className="flex flex-col px-4 py-3 rounded-xl hover:bg-magenta/5 transition-colors group"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-magenta/5 transition-colors group"
                         >
-                          <span className="text-sm font-semibold text-gray-900 group-hover:text-magenta transition-colors">
-                            {service.label}
-                          </span>
-                          <span className="text-xs text-gray-500 mt-0.5">{service.desc}</span>
+                          <div className={`w-8 h-8 rounded-lg bg-linear-to-br ${service.color} flex items-center justify-center shrink-0`}>
+                            <service.icon className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <span className="block text-sm font-semibold text-gray-900 group-hover:text-magenta transition-colors">
+                              {service.label}
+                            </span>
+                            <span className="text-xs text-gray-500">{service.desc}</span>
+                          </div>
                         </Link>
                       ))}
                     </div>
@@ -129,10 +134,15 @@ export function Navbar() {
                 <Link
                   key={service.href}
                   to={service.href}
-                  className="flex flex-col px-3 py-3 rounded-xl hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
                 >
-                  <span className="text-sm font-semibold text-gray-900">{service.label}</span>
-                  <span className="text-xs text-gray-500">{service.desc}</span>
+                  <div className={`w-8 h-8 rounded-lg bg-linear-to-br ${service.color} flex items-center justify-center shrink-0`}>
+                    <service.icon className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-semibold text-gray-900">{service.label}</span>
+                    <span className="text-xs text-gray-500">{service.desc}</span>
+                  </div>
                 </Link>
               ))}
               <div className="border-t border-gray-100 pt-3 mt-3 space-y-1">
