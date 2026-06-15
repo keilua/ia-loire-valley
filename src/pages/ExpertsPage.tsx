@@ -43,6 +43,7 @@ export function ExpertsPage() {
       return q === '' ||
         e.name.toLowerCase().includes(q) ||
         e.specialty.toLowerCase().includes(q) ||
+        e.location.toLowerCase().includes(q) ||
         e.sectors.some(s => s.toLowerCase().includes(q))
     })
   }, [experts, search])
