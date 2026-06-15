@@ -1,0 +1,131 @@
+import { createClient } from '@sanity/client'
+
+const token = process.env.SANITY_TOKEN
+if (!token) {
+  console.error('❌  Manque SANITY_TOKEN. Lance : SANITY_TOKEN=xxx node scripts/seed-aides.mjs')
+  process.exit(1)
+}
+
+const client = createClient({
+  projectId: 'dqwhxx3m',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  token,
+  useCdn: false,
+})
+
+const aides = [
+  {
+    _type: 'aide',
+    name: 'Prêt Transformation Numérique',
+    org: 'BpiFrance',
+    type: 'national',
+    category: 'Prêt sans garantie',
+    amount: '100 000 € – 3 M€',
+    eligibility: 'PME et ETI',
+    description: 'Financement sans garantie pour accélérer votre transition numérique et intégrer des solutions IA dans vos processus.',
+    link: 'https://www.bpifrance.fr',
+    tags: ['Sans garantie', 'PME', 'ETI'],
+    order: 1,
+  },
+  {
+    _type: 'aide',
+    name: "Aide à l'Innovation – Volet IA",
+    org: 'BpiFrance',
+    type: 'national',
+    category: 'Subvention + avance remboursable',
+    amount: "Jusqu'à 600 000 €",
+    eligibility: 'Startups et PME innovantes',
+    description: "Soutien aux projets d'innovation technologique incluant l'intelligence artificielle, via subvention et avance remboursable.",
+    link: 'https://www.bpifrance.fr',
+    tags: ['Innovation', 'IA', 'Startups'],
+    order: 2,
+  },
+  {
+    _type: 'aide',
+    name: "Crédit d'Impôt Recherche (CIR)",
+    org: 'Direction Générale des Finances',
+    type: 'fiscal',
+    category: 'Avantage fiscal',
+    amount: '30 % des dépenses R&D',
+    eligibility: 'Toutes entreprises avec activité R&D',
+    description: "Réduction d'impôt sur vos dépenses de recherche et développement. Applicable aux projets IA incluant une composante R&D.",
+    link: 'https://www.impots.gouv.fr/professionnel/questions/puis-je-pretendre-au-credit-impot-recherche',
+    tags: ['Fiscal', 'R&D', 'Toutes tailles'],
+    order: 3,
+  },
+  {
+    _type: 'aide',
+    name: "Crédit d'Impôt Innovation (CII)",
+    org: 'Direction Générale des Finances',
+    type: 'fiscal',
+    category: 'Avantage fiscal',
+    amount: '20 % des dépenses (30 % JEI)',
+    eligibility: 'PME au sens européen',
+    description: "Crédit d'impôt pour les dépenses d'innovation hors R&D fondamentale. Couvre les premières réalisations prototypes IA.",
+    link: 'https://www.impots.gouv.fr/professionnel/credit-dimpot-pour-investissements-productifs',
+    tags: ['Fiscal', 'Innovation', 'PME'],
+    order: 4,
+  },
+  {
+    _type: 'aide',
+    name: 'France 2030 – Programme IA',
+    org: 'BpiFrance / État',
+    type: 'national',
+    category: 'Appel à projets',
+    amount: 'Variable selon AAP',
+    eligibility: 'Consortiums et entreprises innovantes',
+    description: "Financement de projets stratégiques en IA dans le cadre du plan d'investissement France 2030. Plusieurs appels à projets par an.",
+    link: 'https://www.bpifrance.fr/france-2030',
+    tags: ['Grands projets', 'Consortiums', 'Stratégique'],
+    order: 5,
+  },
+  {
+    _type: 'aide',
+    name: 'Aides Région Centre-Val de Loire',
+    org: 'Région Centre-Val de Loire',
+    type: 'regional',
+    category: 'Subvention régionale',
+    amount: 'Variable selon dispositif',
+    eligibility: 'Entreprises domiciliées en région CVL',
+    description: "Dispositifs régionaux pour la transformation numérique et l'adoption de l'IA : AMI, subventions innovation, cofinancement.",
+    link: 'https://www.centre-valdeloire.fr/le-guide-des-aides-de-la-region-centre-val-de-loire',
+    tags: ['Régional', 'Numérique', 'CVL'],
+    order: 6,
+  },
+  {
+    _type: 'aide',
+    name: 'FNE-Formation & OPCO',
+    org: 'Ministère du Travail / OPCO',
+    type: 'formation',
+    category: 'Prise en charge formation',
+    amount: 'Prise en charge totale ou partielle',
+    eligibility: 'Salariés de toutes entreprises',
+    description: 'Financement des formations IA pour vos équipes via votre OPCO ou le FNE-Formation. Cumulable avec le CPF.',
+    link: 'https://travail-emploi.gouv.fr',
+    tags: ['Formation', 'Salariés', 'CPF'],
+    order: 7,
+  },
+  {
+    _type: 'aide',
+    name: 'Horizon Europe',
+    org: 'Union Européenne',
+    type: 'national',
+    category: 'Programme européen',
+    amount: 'Plusieurs millions €',
+    eligibility: 'Consortiums européens, labos, entreprises',
+    description: "Programme-cadre européen finançant la recherche et l'innovation, avec des appels dédiés à l'IA responsable et aux données.",
+    link: 'https://research-and-innovation.ec.europa.eu/funding/funding-opportunities/funding-programmes-and-open-calls/horizon-europe_fr',
+    tags: ['Européen', 'R&D', 'Consortiums'],
+    order: 8,
+  },
+]
+
+console.log(`🚀 Insertion de ${aides.length} aides & financements dans Sanity…`)
+
+for (const aide of aides) {
+  const doc = await client.create(aide)
+  console.log(`✅ ${aide.name} → ${doc._id}`)
+}
+
+console.log('\n🎉 Toutes les aides ont été ajoutées !')

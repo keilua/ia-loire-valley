@@ -70,3 +70,55 @@ export const TRAININGS_QUERY = `
   link
 }
 `
+
+export const PARTENAIRES_QUERY = `
+*[_type == "partenaire"] | order(order asc, name asc) {
+  "id": _id,
+  name,
+  role,
+  "logo": logo.asset->url,
+  url,
+  order
+}
+`
+
+export const TEAM_QUERY = `
+*[_type == "teamMember"] | order(order asc, name asc) {
+  "id": _id,
+  name,
+  role,
+  bio,
+  "photo": photo.asset->url,
+  email,
+  linkedin,
+  order
+}
+`
+
+export const AIDES_QUERY = `
+*[_type == "aide"] | order(order asc, name asc) {
+  "id": _id,
+  name,
+  org,
+  type,
+  category,
+  amount,
+  eligibility,
+  description,
+  link,
+  "tags": coalesce(tags, []),
+  order
+}
+`
+
+export const PLATFORMS_QUERY = `
+*[_type == "platform"] | order(order asc, name asc) {
+  "id": _id,
+  name,
+  type,
+  topics,
+  url,
+  free,
+  order
+}
+`

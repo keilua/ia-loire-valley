@@ -64,18 +64,18 @@ export function HomePage() {
           </div>
 
           {/* Service cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {mainServices.map((service, i) => (
               <Link key={i} to={service.path} className="group">
-                <Card className="h-full p-5 sm:p-6 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
-                  <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-linear-to-br ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <service.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                <Card className="h-full p-3 sm:p-6 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 bg-white/80 backdrop-blur-sm">
+                  <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-linear-to-br ${service.color} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform`}>
+                    <service.icon className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">{service.title}</h3>
-                  <p className="text-gray-600 mb-4 leading-relaxed text-sm">{service.description}</p>
+                  <h3 className="text-sm sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">{service.title}</h3>
+                  <p className="hidden sm:block text-gray-600 mb-4 leading-relaxed text-sm">{service.description}</p>
                   <div className="flex items-center text-magenta">
-                    <span className="text-sm font-medium">En savoir plus</span>
-                    <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                    <span className="text-xs sm:text-sm font-medium">En savoir plus</span>
+                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Card>
               </Link>

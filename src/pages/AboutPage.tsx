@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Target, Users, MapPin, Mail, Zap, Heart } from 'lucide-react'
+import { ArrowLeft, Target, Users, MapPin, Mail, Zap, Heart, ExternalLink } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
+import { usePartenaires, useTeam } from '../hooks/useData'
 
 const values = [
   {
@@ -30,20 +31,10 @@ const values = [
   },
 ]
 
-const partners = [
-  { name: 'JCI Orléans', role: 'Porteur de projet', logo: '/logo-jci-orleans.svg' },
-  { name: 'Région Centre-Val de Loire', role: 'Partenaire institutionnel', logo: '/Logo_region_centre-val_de_loire.png' },
-  { name: 'Recia', role: 'Partenaire numérique', logo: '/Recia_CVDL_logo.png' },
-  { name: 'CCI Centre-Val de Loire', role: 'Partenaire économique', placeholder: true },
-]
-
-const team = [
-  { name: 'À compléter', role: 'Porteur de projet', placeholder: true },
-  { name: 'À compléter', role: 'Coordinateur', placeholder: true },
-  { name: 'À compléter', role: 'Partenaire technique', placeholder: true },
-]
-
 export function AboutPage() {
+  const { data: partners = [] } = usePartenaires()
+  const { data: team = [] } = useTeam()
+
   return (
     <div className="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-6xl mx-auto">
@@ -104,20 +95,24 @@ export function AboutPage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Nos partenaires</h2>
           <p className="text-gray-500 mb-6">La plateforme est portée par un réseau d'acteurs institutionnels et économiques du territoire.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {partners.map((p, i) => (
-              <Card key={i} className="p-5 shadow-sm text-center">
-                <div className="w-20 h-14 flex items-center justify-center mx-auto mb-3">
-                  {'logo' in p && p.logo
-                    ? <img src={p.logo} alt={p.name} className="w-full h-full object-contain" />
-                    : <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center"><Building2 className="w-8 h-8 text-gray-300" /></div>
-                  }
-                </div>
-                <p className="font-semibold text-gray-900 text-sm mb-1">{p.name}</p>
-                <p className="text-xs text-gray-500">{p.role}</p>
-              </Card>
-            ))}
+            {partners.map(p => {
+              const card = (
+                <Card key={p.id} className={`p-5 shadow-sm text-center h-full ${p.url ? 'hover:shadow-md transition-shadow cursor-pointer' : ''}`}>
+                  <div className="w-20 h-14 flex items-center justify-center mx-auto mb-3">
+                    {p.logo
+                      ? <img src={p.logo} alt={p.name} className="w-full h-full object-contain" />
+                      : <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center"><BuildingIcon className="w-8 h-8 text-gray-300" /></div>
+                    }
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm mb-1">{p.name}</p>
+                  <p className="text-xs text-gray-500">{p.role}</p>
+                </Card>
+              )
+              return p.url
+                ? <a key={p.id} href={p.url} target="_blank" rel="noopener noreferrer">{card}</a>
+                : <div key={p.id}>{card}</div>
+            })}
           </div>
-          <p className="text-xs text-gray-400 mt-3">* Autres logos à venir</p>
         </div>
 
         {/* Team */}
@@ -125,17 +120,32 @@ export function AboutPage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-2">L'équipe</h2>
           <p className="text-gray-500 mb-6">Les personnes qui portent et animent la plateforme.</p>
           <div className="grid sm:grid-cols-3 gap-4">
-            {team.map((member, i) => (
-              <Card key={i} className="p-5 shadow-sm text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-8 h-8 text-gray-300" />
+            {team.map(member => (
+              <Card key={member.id} className="p-5 shadow-sm text-center">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-3 overflow-hidden">
+                  {member.photo
+                    ? <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
+                    : <Users className="w-8 h-8 text-gray-300" />
+                  }
                 </div>
                 <p className="font-semibold text-gray-900 text-sm mb-1">{member.name}</p>
-                <p className="text-xs text-gray-500">{member.role}</p>
+                <p className="text-xs text-gray-500 mb-2">{member.role}</p>
+                {member.bio && <p className="text-xs text-gray-400 leading-relaxed mb-2">{member.bio}</p>}
+                <div className="flex items-center justify-center gap-2">
+                  {member.email && (
+                    <a href={`mailto:${member.email}`} className="text-violet hover:text-magenta transition-colors">
+                      <Mail className="w-4 h-4" />
+                    </a>
+                  )}
+                  {member.linkedin && (
+                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-violet hover:text-magenta transition-colors">
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
               </Card>
             ))}
           </div>
-          <p className="text-xs text-gray-400 mt-3">* Section à compléter</p>
         </div>
 
         {/* Contact CTA */}
@@ -158,7 +168,7 @@ export function AboutPage() {
   )
 }
 
-function Building2({ className }: { className?: string }) {
+function BuildingIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />

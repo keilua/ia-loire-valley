@@ -3,115 +3,15 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Euro, BadgeCheck, Building2, Globe, Landmark } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
+import { useAides } from '../hooks/useData'
+import type { AideType } from '../types'
 
-type AideType = 'all' | 'national' | 'regional' | 'fiscal' | 'formation'
-
-const aides = [
-  {
-    id: '1',
-    name: 'Prêt Transformation Numérique',
-    org: 'BpiFrance',
-    type: 'national' as AideType,
-    category: 'Prêt sans garantie',
-    amount: '100 000 € – 3 M€',
-    eligibility: 'PME et ETI',
-    description: 'Financement sans garantie pour accélérer votre transition numérique et intégrer des solutions IA dans vos processus.',
-    link: 'https://www.bpifrance.fr',
-    tags: ['Sans garantie', 'PME', 'ETI'],
-    color: 'from-blue-500 to-violet',
-  },
-  {
-    id: '2',
-    name: 'Aide à l\'Innovation – Volet IA',
-    org: 'BpiFrance',
-    type: 'national' as AideType,
-    category: 'Subvention + avance remboursable',
-    amount: 'Jusqu\'à 600 000 €',
-    eligibility: 'Startups et PME innovantes',
-    description: 'Soutien aux projets d\'innovation technologique incluant l\'intelligence artificielle, via subvention et avance remboursable.',
-    link: 'https://www.bpifrance.fr',
-    tags: ['Innovation', 'IA', 'Startups'],
-    color: 'from-magenta to-rose',
-  },
-  {
-    id: '3',
-    name: 'Crédit d\'Impôt Recherche (CIR)',
-    org: 'Direction Générale des Finances',
-    type: 'fiscal' as AideType,
-    category: 'Avantage fiscal',
-    amount: '30 % des dépenses R&D',
-    eligibility: 'Toutes entreprises avec activité R&D',
-    description: 'Réduction d\'impôt sur vos dépenses de recherche et développement. Applicable aux projets IA incluant une composante R&D.',
-    link: 'https://www.impots.gouv.fr/professionnel/questions/puis-je-pretendre-au-credit-impot-recherche',
-    tags: ['Fiscal', 'R&D', 'Toutes tailles'],
-    color: 'from-violet to-magenta',
-  },
-  {
-    id: '4',
-    name: 'Crédit d\'Impôt Innovation (CII)',
-    org: 'Direction Générale des Finances',
-    type: 'fiscal' as AideType,
-    category: 'Avantage fiscal',
-    amount: '20 % des dépenses (30 % JEI)',
-    eligibility: 'PME au sens européen',
-    description: 'Crédit d\'impôt pour les dépenses d\'innovation hors R&D fondamentale. Couvre les premières réalisations prototypes IA.',
-    link: 'https://www.impots.gouv.fr/professionnel/credit-dimpot-pour-investissements-productifs',
-    tags: ['Fiscal', 'Innovation', 'PME'],
-    color: 'from-orange to-magenta',
-  },
-  {
-    id: '5',
-    name: 'France 2030 – Programme IA',
-    org: 'BpiFrance / État',
-    type: 'national' as AideType,
-    category: 'Appel à projets',
-    amount: 'Variable selon AAP',
-    eligibility: 'Consortiums et entreprises innovantes',
-    description: 'Financement de projets stratégiques en IA dans le cadre du plan d\'investissement France 2030. Plusieurs appels à projets par an.',
-    link: 'https://www.bpifrance.fr/france-2030',
-    tags: ['Grands projets', 'Consortiums', 'Stratégique'],
-    color: 'from-rose to-violet',
-  },
-  {
-    id: '6',
-    name: 'Aides Région Centre-Val de Loire',
-    org: 'Région Centre-Val de Loire',
-    type: 'regional' as AideType,
-    category: 'Subvention régionale',
-    amount: 'Variable selon dispositif',
-    eligibility: 'Entreprises domiciliées en région CVL',
-    description: 'Dispositifs régionaux pour la transformation numérique et l\'adoption de l\'IA : AMI, subventions innovation, cofinancement.',
-    link: 'https://www.centre-valdeloire.fr/le-guide-des-aides-de-la-region-centre-val-de-loire',
-    tags: ['Régional', 'Numérique', 'CVL'],
-    color: 'from-violet to-rose',
-  },
-  {
-    id: '7',
-    name: 'FNE-Formation & OPCO',
-    org: 'Ministère du Travail / OPCO',
-    type: 'formation' as AideType,
-    category: 'Prise en charge formation',
-    amount: 'Prise en charge totale ou partielle',
-    eligibility: 'Salariés de toutes entreprises',
-    description: 'Financement des formations IA pour vos équipes via votre OPCO ou le FNE-Formation. Cumulable avec le CPF.',
-    link: 'https://travail-emploi.gouv.fr',
-    tags: ['Formation', 'Salariés', 'CPF'],
-    color: 'from-magenta to-violet',
-  },
-  {
-    id: '8',
-    name: 'Horizon Europe',
-    org: 'Union Européenne',
-    type: 'national' as AideType,
-    category: 'Programme européen',
-    amount: 'Plusieurs millions €',
-    eligibility: 'Consortiums européens, labos, entreprises',
-    description: 'Programme-cadre européen finançant la recherche et l\'innovation, avec des appels dédiés à l\'IA responsable et aux données.',
-    link: 'https://research-and-innovation.ec.europa.eu/funding/funding-opportunities/funding-programmes-and-open-calls/horizon-europe_fr',
-    tags: ['Européen', 'R&D', 'Consortiums'],
-    color: 'from-blue-500 to-magenta',
-  },
-]
+const typeColors: Record<string, string> = {
+  national: 'from-blue-500 to-violet',
+  regional: 'from-violet to-rose',
+  fiscal: 'from-orange to-magenta',
+  formation: 'from-magenta to-violet',
+}
 
 const typeLabels: Record<string, string> = {
   all: 'Toutes les aides',
@@ -129,7 +29,8 @@ const typeIcons: Record<string, React.ElementType> = {
 }
 
 export function AidesPage() {
-  const [activeType, setActiveType] = useState<AideType>('all')
+  const [activeType, setActiveType] = useState<AideType | 'all'>('all')
+  const { data: aides = [] } = useAides()
 
   const filtered = activeType === 'all' ? aides : aides.filter(a => a.type === activeType)
 
@@ -187,7 +88,7 @@ export function AidesPage() {
             return (
               <Card key={aide.id} className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group">
                 <div className="flex items-start gap-4 mb-4">
-                  <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${aide.color} flex items-center justify-center shrink-0`}>
+                  <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${typeColors[aide.type] ?? 'from-violet to-magenta'} flex items-center justify-center shrink-0`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">

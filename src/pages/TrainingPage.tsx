@@ -6,7 +6,7 @@ import {
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select'
-import { useTrainings } from '../hooks/useData'
+import { useTrainings, usePlatforms } from '../hooks/useData'
 import { LoadingGrid, LoadingError } from '../components/ui/LoadingGrid'
 
 const profiles = [
@@ -46,26 +46,6 @@ const profiles = [
     level: 'Technique avancé',
     format: 'Formation longue',
   },
-  {
-    icon: Building,
-    title: 'Collectivités / Acteurs publics',
-    color: 'from-magenta to-violet',
-    objective: 'Comprendre l\'IA pour les services publics',
-    contentType: 'IA et territoire, éthique, conformité, cas d\'usage publics',
-    level: 'Sensibilisation',
-    format: 'Séminaires / Conférences',
-  },
-]
-
-const partners = [
-  { name: 'France Université Numérique (FUN)', type: 'MOOC gratuits', topics: 'Bases de l\'IA, machine learning, IA et société', url: 'https://www.fun-mooc.fr', free: true },
-  { name: 'Google – Fondamentaux de l\'IA', type: 'Cours en ligne gratuit', topics: 'IA générative, Gemini, Machine Learning, Google Cloud', url: 'https://grow.google/intl/fr_fr/learn-skills/ai/', free: true },
-  { name: 'Microsoft – AI Skills Initiative', type: 'Parcours gratuits', topics: 'Copilot, Azure AI, IA responsable, outils Microsoft 365', url: 'https://www.microsoft.com/fr-fr/ai/ai-skills', free: true },
-  { name: 'INRIA – Classe IA', type: 'MOOC gratuit', topics: 'Comprendre l\'IA, éthique, algorithmes, données', url: 'https://www.fun-mooc.fr/fr/cours/lintelligence-artificielle-avec-intelligence/', free: true },
-  { name: 'Coursera – IA for Everyone', type: 'Cours (audit gratuit)', topics: 'Stratégie IA pour non-techniques, cas d\'usage, feuille de route', url: 'https://www.coursera.org/learn/ai-for-everyone', free: true },
-  { name: 'OpenClassrooms', type: 'Parcours certifiants', topics: 'Data science, IA appliquée, développement IA', url: 'https://openclassrooms.com', free: false },
-  { name: 'Simplon.co', type: 'Formations intensives', topics: 'Data, IA, développement — formations accessibles et financées', url: 'https://simplon.co', free: false },
-  { name: 'Organismes locaux partenaires', type: 'Formations présentielles CVL', topics: 'Formations sur-mesure pour entreprises de la région', url: '/experts', free: false },
 ]
 
 export function TrainingPage() {
@@ -73,6 +53,7 @@ export function TrainingPage() {
   const [selectedFormat, setSelectedFormat] = useState('all')
 
   const { data: trainings = [], loading, error } = useTrainings()
+  const { data: platforms = [] } = usePlatforms()
 
   const filteredProfiles = profiles.filter(p => {
     const matchesLevel = selectedLevel === 'all' || p.level.includes(selectedLevel)
@@ -169,9 +150,6 @@ export function TrainingPage() {
                       <Button className="rounded-xl">
                         Voir les formations recommandées <ArrowRight className="ml-2 w-4 h-4" />
                       </Button>
-                      <Link to="/quiz">
-                        <Button variant="outline" className="rounded-xl">Être orienté</Button>
-                      </Link>
                     </div>
                   </div>
                 </div>
@@ -186,22 +164,28 @@ export function TrainingPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Formations disponibles</h2>
             {loading ? <LoadingGrid count={4} /> : error ? <LoadingError message={error} /> : (
               <div className="grid md:grid-cols-2 gap-4">
-                {trainings.map(t => (
-                  <Card key={t.id} className="p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group">
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-semibold text-gray-900 group-hover:text-magenta transition-colors text-sm leading-tight flex-1 mr-2">
-                        {t.title}
-                      </h4>
-                    </div>
-                    <p className="text-xs text-violet mb-2">{t.provider}</p>
-                    <p className="text-xs text-gray-600 mb-3 line-clamp-2">{t.objective}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="text-[11px] px-2 py-0.5 bg-magenta/10 text-magenta rounded-full">{t.level}</span>
-                      <span className="text-[11px] px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">{t.format}</span>
-                      <span className="text-[11px] px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">{t.duration}</span>
-                    </div>
-                  </Card>
-                ))}
+                {trainings.map(t => {
+                  const inner = (
+                    <Card key={t.id} className="p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group h-full">
+                      <div className="flex items-start justify-between mb-2">
+                        <h4 className="font-semibold text-gray-900 group-hover:text-magenta transition-colors text-sm leading-tight flex-1 mr-2">
+                          {t.title}
+                        </h4>
+                        {t.link && <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-magenta shrink-0 transition-colors" />}
+                      </div>
+                      <p className="text-xs text-violet mb-2">{t.provider}</p>
+                      <p className="text-xs text-gray-600 mb-3 line-clamp-2">{t.objective}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="text-[11px] px-2 py-0.5 bg-magenta/10 text-magenta rounded-full">{t.level}</span>
+                        <span className="text-[11px] px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">{t.format}</span>
+                        <span className="text-[11px] px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">{t.duration}</span>
+                      </div>
+                    </Card>
+                  )
+                  return t.link
+                    ? <a key={t.id} href={t.link} target="_blank" rel="noopener noreferrer">{inner}</a>
+                    : <div key={t.id}>{inner}</div>
+                })}
               </div>
             )}
           </div>
@@ -212,31 +196,28 @@ export function TrainingPage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Plateformes recommandées</h2>
           <p className="text-gray-500 mb-6">Ressources sélectionnées — certaines entièrement gratuites.</p>
           <div className="grid md:grid-cols-2 gap-6">
-            {partners.map((p, i) => {
+            {platforms.map(p => {
               const isInternal = p.url.startsWith('/')
-              const Wrapper = isInternal ? Link : 'a'
-              const wrapperProps = isInternal
-                ? { to: p.url }
-                : { href: p.url, target: '_blank', rel: 'noopener noreferrer' }
-              return (
-                <Wrapper key={i} {...(wrapperProps as any)}>
-                  <Card className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group h-full">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-gray-900 group-hover:text-magenta transition-colors">{p.name}</h3>
-                          {p.free && (
-                            <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-semibold">GRATUIT</span>
-                          )}
-                        </div>
-                        <p className="text-sm text-violet">{p.type}</p>
+              const card = (
+                <Card className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group h-full">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-bold text-gray-900 group-hover:text-magenta transition-colors">{p.name}</h3>
+                        {p.free && (
+                          <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-semibold">GRATUIT</span>
+                        )}
                       </div>
-                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                      <p className="text-sm text-violet">{p.type}</p>
                     </div>
-                    <p className="text-sm text-gray-600">{p.topics}</p>
-                  </Card>
-                </Wrapper>
+                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                  </div>
+                  <p className="text-sm text-gray-600">{p.topics}</p>
+                </Card>
               )
+              return isInternal
+                ? <Link key={p.id} to={p.url}>{card}</Link>
+                : <a key={p.id} href={p.url} target="_blank" rel="noopener noreferrer">{card}</a>
             })}
           </div>
         </div>

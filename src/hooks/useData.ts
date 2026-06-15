@@ -4,7 +4,11 @@ import { fetchExperts } from '../services/expertsService'
 import { fetchNews } from '../services/newsService'
 import { fetchTrainings } from '../services/trainingsService'
 import { fetchAmbassadeurs } from '../services/ambassadeursService'
-import type { Event, Expert, NewsArticle, Training, Ambassadeur } from '../types'
+import { fetchPlatforms } from '../services/platformsService'
+import { fetchAides } from '../services/aidesService'
+import { fetchPartenaires } from '../services/partenairesService'
+import { fetchTeam } from '../services/teamService'
+import type { Event, Expert, NewsArticle, Training, Ambassadeur, Platform, Aide, Partenaire, TeamMember } from '../types'
 
 interface UseDataResult<T> {
   data: T[]
@@ -48,3 +52,7 @@ export const useExperts      = (): UseDataResult<Expert>      => useAsyncData(fe
 export const useNews         = (): UseDataResult<NewsArticle> => useAsyncData(fetchNews)
 export const useTrainings    = (): UseDataResult<Training>    => useAsyncData(fetchTrainings)
 export const useAmbassadeurs = (): UseDataResult<Ambassadeur> => useAsyncData(fetchAmbassadeurs)
+export const usePlatforms    = (): UseDataResult<Platform>    => useAsyncData(fetchPlatforms)
+export const useAides        = (): UseDataResult<Aide>        => useAsyncData(fetchAides)
+export const usePartenaires  = (): UseDataResult<Partenaire>  => useAsyncData(fetchPartenaires)
+export const useTeam         = (): UseDataResult<TeamMember>  => useAsyncData(fetchTeam)

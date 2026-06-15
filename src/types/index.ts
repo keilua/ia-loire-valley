@@ -80,6 +80,56 @@ export interface Training {
   link?: string
 }
 
+// ─── Aide ─────────────────────────────────────────────────────────────────────
+export type AideType = 'national' | 'regional' | 'fiscal' | 'formation'
+
+export interface Aide {
+  id: string
+  name: string
+  org: string
+  type: AideType
+  category: string
+  amount: string
+  eligibility: string
+  description: string
+  link?: string
+  tags: string[]
+  order: number
+}
+
+// ─── Partenaire ───────────────────────────────────────────────────────────────
+export interface Partenaire {
+  id: string
+  name: string
+  role: string
+  logo?: string
+  url?: string
+  order: number
+}
+
+// ─── TeamMember ───────────────────────────────────────────────────────────────
+export interface TeamMember {
+  id: string
+  name: string
+  role: string
+  bio?: string
+  photo?: string
+  email?: string
+  linkedin?: string
+  order: number
+}
+
+// ─── Platform ─────────────────────────────────────────────────────────────────
+export interface Platform {
+  id: string
+  name: string
+  type: string
+  topics: string
+  url: string
+  free: boolean
+  order: number
+}
+
 // ─── Testimonial ──────────────────────────────────────────────────────────────
 export interface Testimonial {
   id: string
