@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Newspaper, ArrowRight, Calendar, Tag, ExternalLink } from 'lucide-react'
+import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
 import { useNews } from '../hooks/useData'
 import { LoadingGrid, LoadingError } from '../components/ui/LoadingGrid'
