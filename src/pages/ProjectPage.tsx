@@ -96,6 +96,8 @@ interface QuizData {
   principesEnv: string[]
   politiqueEnv: string[]
   infoRSE: string
+  // Consentement
+  rgpdConsent: boolean
 }
 
 // ── Données statiques ────────────────────────────────────────────────────────
@@ -284,6 +286,7 @@ const initial: QuizData = {
   technologiesIndustrie: initRadio(TECHNO_INDUSTRIE),
   solutionsIA: initRadio(SOLUTIONS_IA), infoIA: '',
   solutionsEnv: [], principesEnv: [], politiqueEnv: [], infoRSE: '',
+  rgpdConsent: false,
 }
 
 // ── Composants utilitaires ────────────────────────────────────────────────────
@@ -292,7 +295,7 @@ function SectionTitle({ title, subtitle }: { title: string; subtitle?: string })
   return (
     <div className="mb-6">
       <h2 className="text-xl font-bold text-gray-900">{title}</h2>
-      {subtitle && <p className="text-sm text-gray-500 mt-1 leading-relaxed">{subtitle}</p>}
+      {subtitle && <p className="text-sm text-gray-500 mt-1.5 leading-relaxed">{subtitle}</p>}
     </div>
   )
 }
@@ -303,15 +306,21 @@ function QuestionLabel({ children }: { children: React.ReactNode }) {
 
 function CheckItem({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
   return (
-    <label className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors group">
-      <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 transition-colors ${checked ? 'bg-violet border-violet' : 'border-gray-300 group-hover:border-violet/50'}`}>
+    <label className={`flex items-start gap-3 p-4 rounded-2xl cursor-pointer transition-all border-2 ${
+      checked
+        ? 'border-violet bg-violet/5'
+        : 'border-gray-100 bg-gray-50/80 hover:border-violet/30 hover:bg-gray-50'
+    }`}>
+      <div className={`mt-0.5 w-5 h-5 rounded-md flex items-center justify-center border-2 shrink-0 transition-colors ${
+        checked ? 'bg-violet border-violet' : 'border-gray-300'
+      }`}>
         {checked && (
           <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
             <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}
       </div>
-      <span className="text-sm text-gray-700 leading-relaxed">{label}</span>
+      <span className={`text-sm leading-relaxed ${checked ? 'text-violet font-medium' : 'text-gray-700'}`}>{label}</span>
       <input type="checkbox" className="sr-only" checked={checked} onChange={onChange} />
     </label>
   )
@@ -319,11 +328,13 @@ function CheckItem({ label, checked, onChange }: { label: string; checked: boole
 
 function RadioItem({ label, selected, onChange }: { label: string; selected: boolean; onChange: () => void }) {
   return (
-    <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${selected ? 'border-violet bg-violet/5' : 'border-gray-200 hover:border-violet/40'}`}>
+    <label className={`flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+      selected ? 'border-violet bg-violet/5' : 'border-gray-100 bg-gray-50/80 hover:border-violet/30'
+    }`}>
       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${selected ? 'border-violet' : 'border-gray-300'}`}>
         {selected && <div className="w-2.5 h-2.5 rounded-full bg-violet" />}
       </div>
-      <span className="text-sm font-medium text-gray-800">{label}</span>
+      <span className={`text-sm font-medium ${selected ? 'text-violet' : 'text-gray-800'}`}>{label}</span>
       <input type="radio" className="sr-only" checked={selected} onChange={onChange} />
     </label>
   )
@@ -381,40 +392,51 @@ function FieldTextarea({ label, value, onChange, rows = 4 }: {
 
 const RADIO_COLS: RadioValue[] = ['Non utilisé', 'Envisagé', 'Opérationnel']
 
-function RadioTable({ items, values, onChange }: {
+const RADIO_COL_STYLES: Record<RadioValue, { active: string; inactive: string }> = {
+  'Non utilisé': {
+    active: 'border-gray-400 bg-gray-100 text-gray-700 font-semibold',
+    inactive: 'border-gray-200 bg-white text-gray-500 hover:border-gray-300',
+  },
+  'Envisagé': {
+    active: 'border-orange bg-orange/10 text-orange font-semibold',
+    inactive: 'border-gray-200 bg-white text-gray-500 hover:border-orange/40',
+  },
+  'Opérationnel': {
+    active: 'border-violet bg-violet/10 text-violet font-semibold',
+    inactive: 'border-gray-200 bg-white text-gray-500 hover:border-violet/40',
+  },
+}
+
+function RadioCardGroup({ items, values, onChange }: {
   items: string[]
   values: Record<string, RadioValue>
   onChange: (item: string, val: RadioValue) => void
 }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr>
-            <th className="text-left py-2 pr-4 w-1/2" />
-            {RADIO_COLS.map(col => (
-              <th key={col} className="text-center py-2 px-3 font-medium text-gray-500 text-xs">{col}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {items.map(item => (
-            <tr key={item} className="hover:bg-gray-50">
-              <td className="py-3 pr-4 text-gray-700 text-sm leading-relaxed">{item}</td>
-              {RADIO_COLS.map(col => (
-                <td key={col} className="text-center px-3">
-                  <input
-                    type="radio"
-                    className="w-4 h-4 accent-violet cursor-pointer"
-                    checked={values[item] === col}
-                    onChange={() => onChange(item, col)}
-                  />
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-3">
+      {items.map(item => (
+        <div key={item} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+          <p className="text-sm font-medium text-gray-800 mb-3 leading-relaxed">{item}</p>
+          <div className="grid grid-cols-3 gap-2">
+            {RADIO_COLS.map(col => {
+              const isActive = values[item] === col
+              const styles = RADIO_COL_STYLES[col]
+              return (
+                <button
+                  key={col}
+                  type="button"
+                  onClick={() => onChange(item, col)}
+                  className={`py-2 px-1 rounded-xl border-2 text-xs text-center transition-all cursor-pointer ${
+                    isActive ? styles.active : styles.inactive
+                  }`}
+                >
+                  {col}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -551,7 +573,7 @@ function StepFicheStructure({ data, setData, toggleCheckbox }: {
         {data.projetIdentifie === 'OUI' && (
           <div className="pl-2 pt-2">
             <QuestionLabel>Si oui, dans quel(s) domaine(s) ?</QuestionLabel>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {DOMAINES_PROJET.map(d => (
                 <CheckItem key={d} label={d} checked={data.domainesProjet.includes(d)} onChange={() => toggleCheckbox('domainesProjet', d)} />
               ))}
@@ -589,43 +611,46 @@ function StepStrategieNumerique({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Dans quels domaines votre entreprise a-t-elle déjà réalisé, ou envisage-t-elle de réaliser, des investissements liés à la transition numérique ?</QuestionLabel>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr>
-                <th className="text-left py-2 pr-4 w-2/3" />
-                <th className="text-center py-2 px-3 font-semibold text-violet text-xs">Investissements réalisés</th>
-                <th className="text-center py-2 px-3 font-semibold text-magenta text-xs">Investissements envisagés</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {DOMAINES_INVESTISSEMENT.map(domaine => (
-                <tr key={domaine} className="hover:bg-gray-50">
-                  <td className="py-3 pr-4 text-gray-700 text-sm leading-relaxed">{domaine}</td>
-                  <td className="text-center px-3">
-                    <input
-                      type="checkbox" className="w-4 h-4 accent-violet cursor-pointer"
-                      checked={data.investissements[domaine]?.realise ?? false}
-                      onChange={() => toggleInvestissement(domaine, 'realise')}
-                    />
-                  </td>
-                  <td className="text-center px-3">
-                    <input
-                      type="checkbox" className="w-4 h-4 accent-magenta cursor-pointer"
-                      checked={data.investissements[domaine]?.envisage ?? false}
-                      onChange={() => toggleInvestissement(domaine, 'envisage')}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-3">
+          {DOMAINES_INVESTISSEMENT.map(domaine => {
+            const realise = data.investissements[domaine]?.realise ?? false
+            const envisage = data.investissements[domaine]?.envisage ?? false
+            return (
+              <div key={domaine} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                <p className="text-sm font-medium text-gray-800 mb-3 leading-relaxed">{domaine}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => toggleInvestissement(domaine, 'realise')}
+                    className={`py-2 px-3 rounded-xl border-2 text-xs text-center transition-all cursor-pointer ${
+                      realise
+                        ? 'border-violet bg-violet/10 text-violet font-semibold'
+                        : 'border-gray-200 bg-white text-gray-500 hover:border-violet/40'
+                    }`}
+                  >
+                    Réalisé
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleInvestissement(domaine, 'envisage')}
+                    className={`py-2 px-3 rounded-xl border-2 text-xs text-center transition-all cursor-pointer ${
+                      envisage
+                        ? 'border-magenta bg-magenta/10 text-magenta font-semibold'
+                        : 'border-gray-200 bg-white text-gray-500 hover:border-magenta/40'
+                    }`}
+                  >
+                    Envisagé
+                  </button>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
 
       <div>
         <QuestionLabel>En quoi votre entreprise est-elle prête à avancer dans la transformation numérique ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {PREPARATION_NUMERIQUE.map(item => (
             <CheckItem key={item} label={item} checked={data.preparationNumerique.includes(item)} onChange={() => toggleCheckbox('preparationNumerique', item)} />
           ))}
@@ -651,7 +676,7 @@ function StepEnvironnement({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Quels sont les processus déjà dématérialisés dans l'entreprise ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {PROCESSUS_DEMATERIALISES.map(item => (
             <CheckItem key={item} label={item} checked={data.processusDematerialises.includes(item)} onChange={() => toggleCheckbox('processusDematerialises', item)} />
           ))}
@@ -660,7 +685,7 @@ function StepEnvironnement({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Quels moyens sont utilisés pour accéder aux ressources de l'entreprise depuis l'extérieur ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {MOYENS_ACCES.map(item => (
             <CheckItem key={item} label={item} checked={data.moyensAcces.includes(item)} onChange={() => toggleCheckbox('moyensAcces', item)} />
           ))}
@@ -669,7 +694,7 @@ function StepEnvironnement({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Quels outils ou solutions utilisez-vous pour assurer votre présence en ligne ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {OUTILS_PRESENCE.map(item => (
             <CheckItem key={item} label={item} checked={data.outilsPresence.includes(item)} onChange={() => toggleCheckbox('outilsPresence', item)} />
           ))}
@@ -695,7 +720,7 @@ function StepContexteRH({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Comment accompagnez-vous vos employés dans la transition numérique au quotidien (autonomie, qualité de vie au travail, implication) ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {ACCOMPAGNEMENT_RH.map(item => (
             <CheckItem key={item} label={item} checked={data.accompagnementRH.includes(item)} onChange={() => toggleCheckbox('accompagnementRH', item)} />
           ))}
@@ -704,7 +729,7 @@ function StepContexteRH({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Quelles actions mettez-vous en place pour former vos collaborateurs aux outils numériques ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {ACTIONS_FORMATION.map(item => (
             <CheckItem key={item} label={item} checked={data.actionsFormation.includes(item)} onChange={() => toggleCheckbox('actionsFormation', item)} />
           ))}
@@ -733,7 +758,7 @@ function StepGestionDonnees({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Comment votre entreprise gère-t-elle ses données en termes de stockage, organisation, accès et exploitation ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {GESTION_DONNEES.map(item => (
             <CheckItem key={item} label={item} checked={data.gestionDonnees.includes(item)} onChange={() => toggleCheckbox('gestionDonnees', item)} />
           ))}
@@ -742,7 +767,7 @@ function StepGestionDonnees({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Comment la cybersécurité est-elle intégrée dans votre entreprise ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {CYBERSECURITE.map(item => (
             <CheckItem key={item} label={item} checked={data.cybersecurite.includes(item)} onChange={() => toggleCheckbox('cybersecurite', item)} />
           ))}
@@ -771,7 +796,7 @@ function StepAutomatisationIA({ data, setData }: {
 
       <div>
         <QuestionLabel>Votre entreprise a-t-elle intégré ou envisage d'intégrer des technologies de l'Industrie 4.0 dans ses processus de production ou d'exploitation ?</QuestionLabel>
-        <RadioTable
+        <RadioCardGroup
           items={TECHNO_INDUSTRIE}
           values={data.technologiesIndustrie}
           onChange={(item, val) => setRadio('technologiesIndustrie', item, val)}
@@ -780,7 +805,7 @@ function StepAutomatisationIA({ data, setData }: {
 
       <div>
         <QuestionLabel>Votre entreprise a-t-elle intégré ou envisage d'intégrer des solutions d'intelligence artificielle dans ses différents processus ?</QuestionLabel>
-        <RadioTable
+        <RadioCardGroup
           items={SOLUTIONS_IA}
           values={data.solutionsIA}
           onChange={(item, val) => setRadio('solutionsIA', item, val)}
@@ -806,7 +831,7 @@ function StepNumeriqueResponsable({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Comment utilisez-vous des solutions numériques pour réduire votre impact environnemental et optimiser vos ressources ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {SOLUTIONS_ENV.map(item => (
             <CheckItem key={item} label={item} checked={data.solutionsEnv.includes(item)} onChange={() => toggleCheckbox('solutionsEnv', item)} />
           ))}
@@ -815,7 +840,7 @@ function StepNumeriqueResponsable({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Comment intégrez-vous les principes de durabilité environnementale à l'aide des outils numériques (basse consommation, recyclage, sensibilisation) ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {PRINCIPES_ENV.map(item => (
             <CheckItem key={item} label={item} checked={data.principesEnv.includes(item)} onChange={() => toggleCheckbox('principesEnv', item)} />
           ))}
@@ -824,7 +849,7 @@ function StepNumeriqueResponsable({ data, setData, toggleCheckbox }: {
 
       <div>
         <QuestionLabel>Votre entreprise a-t-elle mis en place une politique environnementale pour réduire son impact écologique ?</QuestionLabel>
-        <div className="space-y-1">
+        <div className="space-y-2">
           {POLITIQUE_ENV.map(item => (
             <CheckItem key={item} label={item} checked={data.politiqueEnv.includes(item)} onChange={() => toggleCheckbox('politiqueEnv', item)} />
           ))}
@@ -862,6 +887,7 @@ export function ProjectPage() {
   const [data, setData] = useState<QuizData>(initial)
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [stepError, setStepError] = useState<string | null>(null)
 
   const totalSteps = STEPS.length
   const progress = (step / (totalSteps - 1)) * 100
@@ -876,7 +902,38 @@ export function ProjectPage() {
     })
   }
 
+  const validateStep = (): string | null => {
+    if (step === 1) {
+      if (!data.raisonSociale.trim()) return 'La Raison Sociale est obligatoire.'
+      if (!data.nomPrenom.trim()) return 'Le Nom et Prénom de l\'interlocuteur sont obligatoires.'
+      if (!data.fonction.trim()) return 'La Fonction est obligatoire.'
+      if (!data.email.trim()) return 'L\'email est obligatoire.'
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return 'L\'adresse email n\'est pas valide.'
+      if (!data.telephone.trim()) return 'Le téléphone est obligatoire.'
+    }
+    return null
+  }
+
+  const goNext = () => {
+    const error = validateStep()
+    if (error) { setStepError(error); return }
+    setStepError(null)
+    setStep(s => s + 1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const goPrev = () => {
+    setStepError(null)
+    setStep(s => s - 1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const handleSubmit = async () => {
+    if (!data.rgpdConsent) {
+      setStepError('Vous devez accepter le traitement de vos données avant d\'envoyer le diagnostic.')
+      return
+    }
+    setStepError(null)
     setSubmitting(true)
     try {
       const id = import.meta.env.VITE_FORMSPREE_DIAGNOSTIC_ID
@@ -926,6 +983,19 @@ export function ProjectPage() {
 
         {/* Carte contenu */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-8">
+          {/* Pills de progression (étapes 1 à totalSteps-1, pas sur l'intro) */}
+          {step > 0 && (
+            <div className="flex gap-1.5 mb-6">
+              {Array.from({ length: totalSteps - 1 }, (_, i) => i + 1).map(i => (
+                <div
+                  key={i}
+                  className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                    i < step ? 'bg-violet' : i === step ? 'bg-magenta' : 'bg-gray-200'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
           {step === 0 && <StepIntro />}
           {step === 1 && <StepFicheStructure data={data} setData={setData} toggleCheckbox={toggleCheckbox} />}
           {step === 2 && <StepStrategieNumerique data={data} setData={setData} toggleCheckbox={toggleCheckbox} />}
@@ -936,11 +1006,34 @@ export function ProjectPage() {
           {step === 7 && <StepNumeriqueResponsable data={data} setData={setData} toggleCheckbox={toggleCheckbox} />}
         </div>
 
+        {/* Consentement RGPD — affiché uniquement à la dernière étape */}
+        {step === totalSteps - 1 && (
+          <label className="flex items-start gap-3 mt-4 p-4 bg-white rounded-2xl border border-gray-100 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={data.rgpdConsent}
+              onChange={e => { setData(d => ({ ...d, rgpdConsent: e.target.checked })); setStepError(null) }}
+              className="mt-0.5 w-4 h-4 accent-violet shrink-0"
+            />
+            <span className="text-sm text-gray-700 leading-relaxed">
+              J'accepte que les données saisies soient transmises à <strong>Dev'Up Centre-Val de Loire</strong> et à l'équipe <strong>IA Loire Valley</strong> dans le cadre de cet accompagnement, conformément au RGPD. Ces données ne seront utilisées qu'à des fins d'orientation et de suivi de mon projet numérique. <span className="text-magenta font-medium">*</span>
+            </span>
+          </label>
+        )}
+
+        {/* Message d'erreur */}
+        {stepError && (
+          <div className="flex items-start gap-2 mt-4 p-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-700">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            {stepError}
+          </div>
+        )}
+
         {/* Navigation */}
-        <div className="flex items-center justify-between mt-6">
+        <div className="flex items-center justify-between mt-4">
           {step > 0 ? (
             <button
-              onClick={() => setStep(s => s - 1)}
+              onClick={goPrev}
               className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> Précédent
@@ -948,7 +1041,7 @@ export function ProjectPage() {
           ) : <div />}
 
           {step < totalSteps - 1 ? (
-            <Button onClick={() => setStep(s => s + 1)} className="rounded-full px-8">
+            <Button onClick={goNext} className="rounded-full px-8">
               Suivant <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           ) : (

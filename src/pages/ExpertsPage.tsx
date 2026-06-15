@@ -258,9 +258,11 @@ function AmbassadeurCard({ ambassadeur: a }: { ambassadeur: Ambassadeur }) {
         </div>
       </div>
       <div className="flex flex-wrap gap-1.5 mb-4">
-        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${a.type === 'Sectoriel' ? 'bg-orange/10 text-orange' : 'bg-violet/10 text-violet'}`}>
-          {a.type}
-        </span>
+        {a.type === 'Sectoriel' && (
+          <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-orange/10 text-orange">
+            Sectoriel
+          </span>
+        )}
         {a.secteur && (
           <span className={`text-xs px-2.5 py-1 rounded-full ${secteurColors[a.secteur] ?? 'bg-gray-100 text-gray-600'}`}>
             {a.secteur}
@@ -268,13 +270,11 @@ function AmbassadeurCard({ ambassadeur: a }: { ambassadeur: Ambassadeur }) {
         )}
       </div>
       {a.email && (
-        <a
-          href={`mailto:${a.email}`}
-          onClick={e => e.stopPropagation()}
-          className="flex items-center gap-2 text-xs text-gray-500 hover:text-violet transition-colors truncate"
-        >
-          <Mail className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">{a.email}</span>
+        <a href={`mailto:${a.email}`} onClick={e => e.stopPropagation()}>
+          <Button size="sm" variant="outline" className="w-full rounded-xl group-hover:border-violet group-hover:text-violet transition-colors">
+            <Mail className="w-3.5 h-3.5" />
+            Contacter
+          </Button>
         </a>
       )}
     </Card>

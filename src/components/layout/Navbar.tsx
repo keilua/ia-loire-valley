@@ -151,6 +151,10 @@ export function Navbar() {
                   <Button className="w-full justify-center">Bilan d'orientation</Button>
                 </Link>
               </div>
+              <div className="pt-4 mt-2 border-t border-gray-100 flex items-center justify-center gap-2">
+                <span className="text-xs text-gray-400">En partenariat avec</span>
+                <img src="/logo-jci-orleans.svg" alt="JCI Orléans" className="h-6 w-auto" />
+              </div>
             </nav>
           </motion.div>
         )}
