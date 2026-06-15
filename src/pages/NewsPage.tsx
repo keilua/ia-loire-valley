@@ -18,6 +18,7 @@ const categoryColors: Record<string, string> = {
   Industrie: 'bg-violet/20 text-violet',
 }
 
+
 export function NewsPage() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
@@ -88,14 +89,15 @@ export function NewsPage() {
               const catKey = cat === 'Tous' ? 'all' : cat
               const isActive = selectedCategory === catKey
               return (
-                <Button
+                <button
                   key={cat}
-                  size="sm"
                   onClick={() => setSelectedCategory(catKey)}
-                  className={`rounded-full ${isActive ? 'bg-linear-to-r from-magenta to-violet text-white' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 shadow-none'}`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                    isActive ? 'bg-linear-to-r from-magenta to-violet text-white' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                  }`}
                 >
                   {cat}
-                </Button>
+                </button>
               )
             })}
           </div>

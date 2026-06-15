@@ -132,13 +132,14 @@ export function AgendaPage() {
   const past = filtered.filter(e => e.isPast)
 
   const filterBtn = (active: boolean, onClick: () => void, label: string, activeClass = 'bg-linear-to-r from-magenta to-violet text-white') => (
-    <Button
-      size="sm"
+    <button
       onClick={onClick}
-      className={`rounded-full ${active ? activeClass : 'bg-gray-100 text-gray-700 hover:bg-gray-200 shadow-none'}`}
+      className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+        active ? activeClass : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+      }`}
     >
       {label}
-    </Button>
+    </button>
   )
 
   return (
@@ -163,11 +164,11 @@ export function AgendaPage() {
               {filterBtn(filter === 'past', () => setFilter('past'), 'Récents')}
             </div>
             <div className="flex gap-2 flex-wrap sm:ml-auto">
-              {filterBtn(typeFilter === 'all', () => setTypeFilter('all'), 'Tous les types', 'bg-gray-900 text-white')}
-              {filterBtn(typeFilter === 'Conférence', () => setTypeFilter('Conférence'), 'Conférences', 'bg-rose text-white')}
-              {filterBtn(typeFilter === 'Atelier', () => setTypeFilter('Atelier'), 'Ateliers', 'bg-violet text-white')}
-              {filterBtn(typeFilter === 'Webinaire', () => setTypeFilter('Webinaire'), 'Webinaires', 'bg-magenta text-white')}
-              {filterBtn(typeFilter === 'Café Data', () => setTypeFilter('Café Data'), 'Café Data', 'bg-amber-500 text-white')}
+              {filterBtn(typeFilter === 'all', () => setTypeFilter('all'), 'Tous les types')}
+              {filterBtn(typeFilter === 'Conférence', () => setTypeFilter('Conférence'), 'Conférences')}
+              {filterBtn(typeFilter === 'Atelier', () => setTypeFilter('Atelier'), 'Ateliers')}
+              {filterBtn(typeFilter === 'Webinaire', () => setTypeFilter('Webinaire'), 'Webinaires')}
+              {filterBtn(typeFilter === 'Café Data', () => setTypeFilter('Café Data'), 'Café Data')}
             </div>
           </div>
         </Card>
