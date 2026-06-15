@@ -101,6 +101,11 @@ export const expertSchema = defineType({
       title: 'Email de contact',
       type: 'string',
     }),
+    defineField({
+      name: 'phone',
+      title: 'Téléphone',
+      type: 'string',
+    }),
   ],
   preview: {
     select: { title: 'name', subtitle: 'specialty' },

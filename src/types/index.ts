@@ -14,6 +14,7 @@ export interface Expert {
   description: string
   website?: string
   email?: string
+  phone?: string
 }
 
 // ─── Ambassadeur ──────────────────────────────────────────────────────────────

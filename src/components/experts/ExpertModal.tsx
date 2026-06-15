@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { X, MapPin, Mail, Globe, Building2, Star } from 'lucide-react'
+import { X, MapPin, Mail, Globe, Building2, Star, Phone } from 'lucide-react'
 import { Button } from '../ui/Button'
 import type { Expert } from '../../types'
 
@@ -102,6 +102,13 @@ export function ExpertModal({ expert, onClose }: Props) {
               <a href={`mailto:${expert.email}`} className="flex-1">
                 <Button className="w-full rounded-xl">
                   <Mail className="mr-2 w-4 h-4" />Contacter
+                </Button>
+              </a>
+            )}
+            {expert.phone && (
+              <a href={`tel:${expert.phone}`} className="flex-1">
+                <Button variant="outline" className="w-full rounded-xl">
+                  <Phone className="mr-2 w-4 h-4" />Appeler
                 </Button>
               </a>
             )}

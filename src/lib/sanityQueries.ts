@@ -31,7 +31,8 @@ export const EXPERTS_QUERY = `
   level,
   description,
   website,
-  email
+  email,
+  phone
 }
 `
 
