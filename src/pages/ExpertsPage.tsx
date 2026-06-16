@@ -220,7 +220,7 @@ function ExpertCard({ expert, onClick }: { expert: Expert; onClick: () => void }
   const initials = expert.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
   return (
     <Card
-      className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group"
+      className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group flex flex-col h-full"
       onClick={onClick}
     >
       <div className="flex items-start gap-4 mb-4">
@@ -256,7 +256,7 @@ function ExpertCard({ expert, onClick }: { expert: Expert; onClick: () => void }
           <Phone className="w-3.5 h-3.5 shrink-0" />{formatPhone(expert.phone)}
         </a>
       )}
-      <Button size="sm" variant="outline" className="w-full rounded-xl group-hover:border-magenta group-hover:text-magenta transition-colors">
+      <Button size="sm" variant="outline" className="w-full rounded-xl group-hover:border-magenta group-hover:text-magenta transition-colors mt-auto">
         Voir le profil
       </Button>
     </Card>
