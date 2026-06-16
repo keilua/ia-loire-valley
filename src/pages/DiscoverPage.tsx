@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Brain, TrendingUp, Shield, BookOpen, Sparkles, ArrowRight } from 'lucide-react'
+import { ArrowLeft, Brain, TrendingUp, Shield, Sparkles, ArrowRight } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
 
@@ -40,12 +40,6 @@ const considerations = [
   { title: 'Coûts & ROI', description: 'Évaluer l\'investissement nécessaire et le retour attendu' },
 ]
 
-const resources = [
-  { title: 'Guide : Les bases de l\'IA pour les dirigeants', type: 'PDF', duration: '15 min', color: 'from-magenta to-rose' },
-  { title: 'Webinaire : IA et PME – Par où commencer ?', type: 'Vidéo', duration: '45 min', color: 'from-violet to-magenta' },
-  { title: 'Étude de cas : L\'IA dans l\'industrie locale', type: 'Article', duration: '10 min', color: 'from-orange to-magenta' },
-  { title: 'Lexique : Les termes clés de l\'IA', type: 'PDF', duration: '5 min', color: 'from-rose to-violet' },
-]
 
 export function DiscoverPage() {
   return (
@@ -137,30 +131,6 @@ export function DiscoverPage() {
               ))}
             </div>
           </Card>
-        </div>
-
-        {/* Resources */}
-        <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Ressources pédagogiques</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {resources.map((r, i) => (
-              <Card key={i} className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer group">
-                <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${r.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
-                    <BookOpen className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-magenta transition-colors">{r.title}</h3>
-                    <div className="flex items-center gap-3 text-xs text-gray-600">
-                      <span className="px-2 py-1 bg-gray-100 rounded-full">{r.type}</span>
-                      <span>{r.duration}</span>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all" />
-                </div>
-              </Card>
-            ))}
-          </div>
         </div>
 
         {/* CTA */}
