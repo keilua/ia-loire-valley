@@ -71,9 +71,19 @@ export function ExpertsPage() {
           <Link to="/" className="inline-flex items-center text-violet hover:text-magenta mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4 mr-2" />Retour à l'accueil
           </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">Annuaire IA — Centre-Val de Loire</h1>
-          <p className="text-lg text-gray-600 max-w-3xl">
-            Trouvez les experts IA et les ambassadeurs du programme national «&nbsp;Osez l'IA&nbsp;» dans votre région.
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+            <span className="sm:hidden">Annuaire IA<br />Centre-Val de Loire</span>
+            <span className="hidden sm:inline">Annuaire IA Centre-Val de Loire</span>
+          </h1>
+          <p className="text-lg text-gray-600 sm:whitespace-nowrap">
+            Trouvez les experts IA et les ambassadeurs du programme national{' '}
+            <a
+              href="https://www.entreprises.gouv.fr/la-dge/actualites/osez-lia-le-plan-pour-diffuser-lia-dans-toutes-les-entreprises"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-magenta hover:underline font-medium"
+            >«&nbsp;Osez l'IA&nbsp;»</a>
+            {' '}dans votre région.
           </p>
         </div>
 
@@ -87,10 +97,10 @@ export function ExpertsPage() {
                 : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            <Building2 className="w-4 h-4 shrink-0" />
+            <Building2 className="w-4 h-4 shrink-0 hidden sm:block" />
             <span>Experts IA</span>
             {experts.length > 0 && (
-              <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${tab === 'experts' ? 'bg-white/20' : 'bg-gray-100'}`}>
+              <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 hidden sm:inline ${tab === 'experts' ? 'bg-white/20' : 'bg-gray-100'}`}>
                 {experts.length}
               </span>
             )}
@@ -103,10 +113,10 @@ export function ExpertsPage() {
                 : 'text-gray-500 hover:text-gray-900'
             }`}
           >
-            <Users className="w-4 h-4 shrink-0" />
-            <span className="truncate">Ambassadeurs</span>
+            <Users className="w-4 h-4 shrink-0 hidden sm:block" />
+            <span>Ambassadeurs</span>
             {ambassadeurs.length > 0 && (
-              <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${tab === 'ambassadeurs' ? 'bg-white/20' : 'bg-gray-100'}`}>
+              <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 hidden sm:inline ${tab === 'ambassadeurs' ? 'bg-white/20' : 'bg-gray-100'}`}>
                 {ambassadeurs.length}
               </span>
             )}
