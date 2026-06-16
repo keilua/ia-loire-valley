@@ -14,6 +14,7 @@ export async function fetchAmbassadeurs(): Promise<Ambassadeur[]> {
     type: (r.type_d_ambassadeur as string) === 'Sectoriel' ? 'Sectoriel' : 'Régional',
     secteur: (r.secteur as string) ?? undefined,
     email: (r.mail as string) ?? undefined,
+    phone: (r.telephone as string) ?? undefined,
     commentaires: (r.commentaires as string) ?? undefined,
   }))
 }

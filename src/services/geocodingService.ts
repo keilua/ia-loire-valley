@@ -1,5 +1,7 @@
 const CACHE_KEY = 'geocode_cache'
+const CITY_CACHE_KEY = 'geocode_city_cache'
 const memCache = new Map<string, [number, number] | null>()
+const cityMemCache = new Map<string, string | null>()
 let lastRequest = 0
 
 function loadCache() {
@@ -10,16 +12,31 @@ function loadCache() {
       entries.forEach(([k, v]) => memCache.set(k, v))
     }
   } catch { /* ignore */ }
+  try {
+    const raw = localStorage.getItem(CITY_CACHE_KEY)
+    if (raw) {
+      const entries = JSON.parse(raw) as [string, string | null][]
+      entries.forEach(([k, v]) => cityMemCache.set(k, v))
+    }
+  } catch { /* ignore */ }
 }
 
-function saveCache(key: string, value: [number, number] | null) {
-  memCache.set(key, value)
+function saveCache(key: string, coords: [number, number] | null, city: string | null) {
+  memCache.set(key, coords)
+  cityMemCache.set(key, city)
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify([...memCache.entries()]))
+    localStorage.setItem(CITY_CACHE_KEY, JSON.stringify([...cityMemCache.entries()]))
   } catch { /* ignore */ }
 }
 
 loadCache()
+
+/** Returns the city if geocoded, null if geocoded but no city found, undefined if not yet geocoded */
+export function getGeoCity(query: string): string | null | undefined {
+  if (!cityMemCache.has(query)) return undefined
+  return cityMemCache.get(query) ?? null
+}
 
 export async function geocode(query: string): Promise<[number, number] | null> {
   if (memCache.has(query)) return memCache.get(query)!
@@ -29,7 +46,7 @@ export async function geocode(query: string): Promise<[number, number] | null> {
   lastRequest = Date.now()
 
   try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=fr`
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=fr&addressdetails=1`
     const res = await fetch(url, {
       headers: {
         'Accept-Language': 'fr',
@@ -39,12 +56,14 @@ export async function geocode(query: string): Promise<[number, number] | null> {
     const data = await res.json()
     if (data.length > 0) {
       const coords: [number, number] = [parseFloat(data[0].lat), parseFloat(data[0].lon)]
-      saveCache(query, coords)
+      const addr = data[0].address ?? {}
+      const city: string | null = addr.city ?? addr.town ?? addr.village ?? addr.municipality ?? null
+      saveCache(query, coords, city)
       return coords
     }
   } catch { /* ignore */ }
 
-  saveCache(query, null)
+  saveCache(query, null, null)
   return null
 }
 

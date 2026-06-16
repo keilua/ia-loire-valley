@@ -26,6 +26,7 @@ export interface Ambassadeur {
   type: 'Régional' | 'Sectoriel'
   secteur?: string
   email?: string
+  phone?: string
   commentaires?: string
 }
 

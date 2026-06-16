@@ -51,7 +51,7 @@ export function AboutPage() {
 
         {/* Qui sommes-nous */}
         <Card className="p-8 mb-10 shadow-sm">
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
             <div className="w-14 h-14 rounded-2xl gradient-brand flex items-center justify-center shrink-0">
               <Users className="w-7 h-7 text-white" />
             </div>
@@ -66,7 +66,7 @@ export function AboutPage() {
 
         {/* Mission */}
         <Card className="p-8 mb-10 shadow-sm">
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
             <div className="w-14 h-14 rounded-2xl gradient-brand flex items-center justify-center shrink-0">
               <Zap className="w-7 h-7 text-white" />
             </div>
@@ -113,7 +113,7 @@ export function AboutPage() {
             {partners.map(p => {
               const card = (
                 <Card key={p.id} className={`p-5 shadow-sm text-center h-full ${p.url ? 'hover:shadow-md transition-shadow cursor-pointer' : ''}`}>
-                  <div className="w-20 h-14 flex items-center justify-center mx-auto mb-3">
+                  <div className={`flex items-center justify-center mx-auto mb-3 ${/jce|jeune.chambre/i.test(p.name) ? 'w-32 h-20' : 'w-20 h-14'}`}>
                     {p.logo
                       ? <img src={p.logo} alt={p.name} className="w-full h-full object-contain" />
                       : <div className="w-14 h-14 rounded-xl bg-gray-100 flex items-center justify-center"><BuildingIcon className="w-8 h-8 text-gray-300" /></div>

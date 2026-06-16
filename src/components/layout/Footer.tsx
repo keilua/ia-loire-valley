@@ -29,7 +29,7 @@ export function Footer() {
               <Link to="/" className="hover:opacity-80 transition-opacity">
                 <img src={logo} alt="IA Loire Valley" className="h-8 w-auto" />
               </Link>
-              <img src="/logo-jci-orleans.svg" alt="JCI Orléans" className="h-8 w-auto brightness-0 invert" />
+              <img src="/logo-jci-orleans.svg" alt="JCI Orléans" className="h-12 w-auto brightness-0 invert" />
             </div>
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
               La plateforme régionale pour comprendre l'IA, trouver un expert et lancer votre projet en Centre-Val de Loire.

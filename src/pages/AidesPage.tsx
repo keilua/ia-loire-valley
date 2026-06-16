@@ -126,17 +126,24 @@ export function AidesPage() {
           <p className="text-gray-500 mb-6">Annuaires et guides pour trouver d'autres aides adaptées à votre situation.</p>
           <div className="grid md:grid-cols-3 gap-4">
             {[
-              { name: 'Aides Entreprises', desc: 'Annuaire complet des aides publiques pour les entreprises françaises', url: 'https://www.aides-entreprises.fr/' },
-              { name: 'France Num', desc: 'Moteur de recherche officiel des aides à la transformation numérique', url: 'https://www.francenum.gouv.fr/aides-financieres/trouver-une-aide-financiere' },
-              { name: 'Les-Aides.fr', desc: 'Annuaire national de toutes les aides publiques aux entreprises', url: 'https://les-aides.fr' },
+              { name: 'Aides Entreprises', desc: 'Annuaire complet des aides publiques pour les entreprises françaises', url: 'https://www.aides-entreprises.fr/', logo: '/cma-logo-2018-blanc.png' },
+              { name: 'France Num', desc: 'Moteur de recherche officiel des aides à la transformation numérique', url: 'https://www.francenum.gouv.fr/aides-financieres/trouver-une-aide-financiere', logo: '/logo_FranceNum_600x300.png' },
+              { name: 'Les-Aides.fr', desc: 'Annuaire national de toutes les aides publiques aux entreprises', url: 'https://les-aides.fr', logo: "/Logo_de_la_Chambre_de_commerce_et_d'industrie.svg.png" },
             ].map((r, i) => (
               <a key={i} href={r.url} target="_blank" rel="noopener noreferrer">
-                <Card className="p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group h-full">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-bold text-gray-900 group-hover:text-magenta transition-colors">{r.name}</h3>
-                    <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                <Card className="overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group h-full">
+                  {'logo' in r && r.logo && (
+                    <div className="bg-linear-to-r from-violet to-magenta px-5 py-3 flex items-center justify-center h-16">
+                      <img src={r.logo} alt={r.name} className="h-full w-auto object-contain" />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-bold text-gray-900 group-hover:text-magenta transition-colors">{r.name}</h3>
+                      <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-magenta group-hover:translate-x-1 transition-all shrink-0 ml-2" />
+                    </div>
+                    <p className="text-sm text-gray-600">{r.desc}</p>
                   </div>
-                  <p className="text-sm text-gray-600">{r.desc}</p>
                 </Card>
               </a>
             ))}

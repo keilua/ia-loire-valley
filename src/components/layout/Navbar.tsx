@@ -106,7 +106,7 @@ export function Navbar() {
 
           {/* JCI logo + Mobile toggle */}
           <div className="flex items-center gap-3">
-            <img src="/logo-jci-orleans.svg" alt="JCI Orléans" className="hidden md:block h-8 w-auto" />
+            <img src="/logo-jci-orleans.svg" alt="JCI Orléans" className="hidden md:block h-10 w-auto" />
             <button
               className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
               onClick={() => setMobileOpen(v => !v)}

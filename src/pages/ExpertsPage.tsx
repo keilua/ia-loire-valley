@@ -1,10 +1,11 @@
-import { useState, lazy, Suspense, useMemo } from 'react'
+import { useState, lazy, Suspense, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Search, MapPin, Mail, Building2, Users, Filter, Phone } from 'lucide-react'
+import { ArrowLeft, Search, MapPin, Mail, Building2, Users, Filter, Phone, ChevronDown } from 'lucide-react'
 import { formatPhone } from '../utils/formatPhone'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
 import { useExperts, useAmbassadeurs } from '../hooks/useData'
+import { geocode, getGeoCity } from '../services/geocodingService'
 import { LoadingGrid, LoadingError } from '../components/ui/LoadingGrid'
 import { ExpertModal } from '../components/experts/ExpertModal'
 import type { Expert, Ambassadeur } from '../types'
@@ -31,9 +32,48 @@ export function ExpertsPage() {
   const [tab, setTab] = useState<Tab>('experts')
   const [search, setSearch] = useState('')
   const [selectedModal, setSelectedModal] = useState<Expert | null>(null)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [selectedLevel, setSelectedLevel] = useState<string | null>(null)
+  const [selectedVille, setSelectedVille] = useState<string | null>(null)
 
   const { data: experts = [], loading: loadingExperts, error: errorExperts } = useExperts()
   const { data: ambassadeurs = [], loading: loadingAmb, error: errorAmb } = useAmbassadeurs()
+  const [villeMap, setVilleMap] = useState<Map<string, string>>(new Map())
+
+  useEffect(() => {
+    if (ambassadeurs.length === 0) return
+    let cancelled = false
+
+    async function enrichVilles() {
+      for (const amb of ambassadeurs) {
+        if (cancelled) break
+        // Geocode if not cached yet (returns instantly if already cached)
+        if (getGeoCity(amb.organisation) === undefined) {
+          await geocode(amb.organisation)
+        }
+        if (cancelled) break
+        const city = getGeoCity(amb.organisation)
+        if (city) {
+          setVilleMap(prev => {
+            if (prev.get(amb.id) === city) return prev
+            const next = new Map(prev)
+            next.set(amb.id, city)
+            return next
+          })
+        }
+      }
+    }
+
+    enrichVilles()
+    return () => { cancelled = true }
+  }, [ambassadeurs])
+
+  const availableVilles = useMemo(
+    () => [...new Set(experts.map(e => e.location).filter(Boolean))].sort(),
+    [experts]
+  )
+  const LEVELS = ['Conseil', 'Accompagnement', 'Formation', 'Développement'] as const
+  const activeFilterCount = (selectedLevel ? 1 : 0) + (selectedVille ? 1 : 0)
 
   const filteredExperts = useMemo(() => {
     const q = search.toLowerCase()
@@ -41,13 +81,15 @@ export function ExpertsPage() {
     return experts.filter(e => {
       if (seen.has(e.id)) return false
       seen.add(e.id)
+      if (selectedLevel && e.level !== selectedLevel) return false
+      if (selectedVille && e.location !== selectedVille) return false
       return q === '' ||
         e.name.toLowerCase().includes(q) ||
         e.specialty.toLowerCase().includes(q) ||
         e.location.toLowerCase().includes(q) ||
         e.sectors.some(s => s.toLowerCase().includes(q))
     })
-  }, [experts, search])
+  }, [experts, search, selectedLevel, selectedVille])
 
   const filteredAmb = useMemo(() => {
     const q = search.toLowerCase()
@@ -59,9 +101,10 @@ export function ExpertsPage() {
         a.nom.toLowerCase().includes(q) ||
         a.prenom.toLowerCase().includes(q) ||
         a.organisation.toLowerCase().includes(q) ||
-        (a.secteur ?? '').toLowerCase().includes(q)
+        (a.secteur ?? '').toLowerCase().includes(q) ||
+        (villeMap.get(a.id) ?? '').toLowerCase().includes(q)
     })
-  }, [ambassadeurs, search])
+  }, [ambassadeurs, search, villeMap])
 
   return (
     <div className="min-h-screen pt-16 sm:pt-24 pb-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
@@ -91,7 +134,7 @@ export function ExpertsPage() {
         {/* Tabs */}
         <div className="grid grid-cols-2 gap-2 mb-8 p-1 bg-white rounded-2xl shadow-sm border border-gray-100">
           <button
-            onClick={() => { setTab('experts'); setSearch('') }}
+            onClick={() => { setTab('experts'); setSearch(''); setSelectedLevel(null); setSelectedVille(null); setFiltersOpen(false) }}
             className={`flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
               tab === 'experts'
                 ? 'bg-linear-to-r from-magenta to-violet text-white shadow-sm'
@@ -107,7 +150,7 @@ export function ExpertsPage() {
             )}
           </button>
           <button
-            onClick={() => { setTab('ambassadeurs'); setSearch('') }}
+            onClick={() => { setTab('ambassadeurs'); setSearch(''); setSelectedLevel(null); setSelectedVille(null); setFiltersOpen(false) }}
             className={`flex items-center justify-center gap-2 px-3 sm:px-6 py-3 rounded-xl text-sm font-semibold transition-all ${
               tab === 'ambassadeurs'
                 ? 'bg-linear-to-r from-violet to-magenta text-white shadow-sm'
@@ -134,21 +177,95 @@ export function ExpertsPage() {
           </Suspense>
         </div>
 
-        {/* Search */}
+        {/* Search + Filters */}
         <Card className="p-4 mb-8 shadow-sm">
-          <div className="flex items-center gap-3">
-            <Filter className="w-4 h-4 text-gray-400 shrink-0" />
+          <div className="flex items-center gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
-                placeholder={tab === 'experts' ? 'Rechercher par nom, spécialité, secteur…' : 'Rechercher par nom, organisation, secteur…'}
+                placeholder={tab === 'experts' ? 'Rechercher par nom, spécialité, ville…' : 'Rechercher par nom, organisation, ville…'}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-magenta/30 focus:border-magenta"
               />
             </div>
+            {tab === 'experts' && (
+              <button
+                onClick={() => setFiltersOpen(v => !v)}
+                className={`flex items-center gap-1.5 shrink-0 px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
+                  filtersOpen || activeFilterCount > 0
+                    ? 'border-magenta text-magenta bg-magenta/5'
+                    : 'border-gray-200 text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+              >
+                <Filter className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Filtres</span>
+                {activeFilterCount > 0 && (
+                  <span className="bg-magenta text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold leading-none">
+                    {activeFilterCount}
+                  </span>
+                )}
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${filtersOpen ? 'rotate-180' : ''}`} />
+              </button>
+            )}
           </div>
+
+          {/* Expanded filter panel — experts only */}
+          {tab === 'experts' && filtersOpen && (
+            <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-4">
+              {/* Niveau */}
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Niveau</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {LEVELS.map(level => (
+                    <button
+                      key={level}
+                      onClick={() => setSelectedLevel(selectedLevel === level ? null : level)}
+                      className={`text-xs px-2.5 py-1 rounded-full font-medium transition-all ${
+                        selectedLevel === level
+                          ? levelColors[level]
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      {level}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ville */}
+              {availableVilles.length > 1 && (
+                <div>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Ville</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {availableVilles.map(ville => (
+                      <button
+                        key={ville}
+                        onClick={() => setSelectedVille(selectedVille === ville ? null : ville)}
+                        className={`text-xs px-2.5 py-1 rounded-full font-medium transition-all ${
+                          selectedVille === ville
+                            ? 'bg-violet/10 text-violet'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {ville}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeFilterCount > 0 && (
+                <button
+                  onClick={() => { setSelectedLevel(null); setSelectedVille(null) }}
+                  className="text-xs text-magenta hover:underline self-start"
+                >
+                  Effacer les filtres
+                </button>
+              )}
+            </div>
+          )}
         </Card>
 
         {/* ── EXPERTS TAB ── */}
@@ -266,7 +383,7 @@ function ExpertCard({ expert, onClick }: { expert: Expert; onClick: () => void }
 function AmbassadeurCard({ ambassadeur: a }: { ambassadeur: Ambassadeur }) {
   const initials = `${a.prenom[0] ?? ''}${a.nom[0] ?? ''}`.toUpperCase()
   return (
-    <Card className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group">
+    <Card className="p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 group flex flex-col h-full">
       <div className="flex items-start gap-4 mb-4">
         <div className="w-14 h-14 rounded-xl bg-linear-to-br from-violet to-magenta flex items-center justify-center shrink-0">
           <span className="text-lg font-bold text-white">{initials}</span>
@@ -290,14 +407,18 @@ function AmbassadeurCard({ ambassadeur: a }: { ambassadeur: Ambassadeur }) {
           </span>
         )}
       </div>
-      {a.email && (
-        <a href={`mailto:${a.email}`} onClick={e => e.stopPropagation()}>
-          <Button size="sm" variant="outline" className="w-full rounded-xl group-hover:border-violet group-hover:text-violet transition-colors">
-            <Mail className="w-3.5 h-3.5" />
-            Contacter
-          </Button>
-        </a>
-      )}
+      <div className="flex flex-col gap-1.5 mt-auto">
+        {a.email && (
+          <a href={`mailto:${a.email}`} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-violet transition-colors w-fit">
+            <Mail className="w-3.5 h-3.5 shrink-0" />{a.email}
+          </a>
+        )}
+        {a.phone && (
+          <a href={`tel:${a.phone}`} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-violet transition-colors w-fit sm:pointer-events-none sm:cursor-default sm:hover:text-gray-500">
+            <Phone className="w-3.5 h-3.5 shrink-0" />{formatPhone(a.phone)}
+          </a>
+        )}
+      </div>
     </Card>
   )
 }

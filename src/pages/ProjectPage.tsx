@@ -269,6 +269,7 @@ const STEPS = [
   { label: 'Gestion des données', category: 'GESTION DES DONNÉES' },
   { label: 'Automatisation et IA', category: 'AUTOMATISATION ET IA' },
   { label: 'Numérique responsable', category: 'NUMÉRIQUE RESPONSABLE' },
+  { label: 'Vos coordonnées', category: 'VOS COORDONNÉES' },
 ]
 
 const initRadio = (items: string[]): Record<string, RadioValue> =>
@@ -447,7 +448,7 @@ function RadioCardGroup({ items, values, onChange }: {
 function StepIntro() {
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Diagnostic de maturité numérique</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">Diagnostic IA</h2>
       <p className="text-gray-600 leading-relaxed mb-4">
         Ce questionnaire s'inscrit dans le cadre de l'initiative régionale <strong>IA Loire Valley</strong> pour accompagner la transformation numérique des entreprises du Centre-Val de Loire.
       </p>
@@ -514,7 +515,6 @@ function StepFicheStructure({ data, setData, toggleCheckbox }: {
       <div className="space-y-4">
         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Votre organisation</p>
         <div className="grid sm:grid-cols-2 gap-4">
-          <FieldInput label="Raison Sociale" required value={data.raisonSociale} onChange={e => set('raisonSociale')(e.target.value)} />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               SIRET / SIREN<span className="text-magenta ml-1">*</span>
@@ -539,6 +539,7 @@ function StepFicheStructure({ data, setData, toggleCheckbox }: {
               <p className="text-xs text-orange-500 mt-1">Entreprise non trouvée — remplissez manuellement</p>
             )}
           </div>
+          <FieldInput label="Raison Sociale" required value={data.raisonSociale} onChange={e => set('raisonSociale')(e.target.value)} />
           <FieldInput label="Année de création" required placeholder="ex: 2015" value={data.anneeCreation} onChange={e => set('anneeCreation')(e.target.value)} />
           <FieldSelect label="Département" required options={DEPARTEMENTS} value={data.departement} onChange={set('departement')} />
           <FieldInput label="Nombre de salariés" required value={data.nbSalaries} onChange={e => set('nbSalaries')(e.target.value)} />
@@ -546,16 +547,6 @@ function StepFicheStructure({ data, setData, toggleCheckbox }: {
         </div>
         <FieldTextarea label="Description de l'activité" value={data.descriptionActivite} onChange={set('descriptionActivite')} rows={3} />
         <FieldInput label="Site web" placeholder="https://" value={data.siteWeb} onChange={e => set('siteWeb')(e.target.value)} />
-      </div>
-
-      <div className="space-y-4">
-        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Interlocuteur du diagnostic</p>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <FieldInput label="Nom Prénom" required value={data.nomPrenom} onChange={e => set('nomPrenom')(e.target.value)} />
-          <FieldInput label="Fonction" required value={data.fonction} onChange={e => set('fonction')(e.target.value)} />
-          <FieldInput label="Email" required type="email" value={data.email} onChange={e => set('email')(e.target.value)} />
-          <FieldInput label="Téléphone" required value={data.telephone} onChange={e => set('telephone')(e.target.value)} />
-        </div>
       </div>
 
       <div className="space-y-4">
@@ -862,6 +853,32 @@ function StepNumeriqueResponsable({ data, setData, toggleCheckbox }: {
   )
 }
 
+function StepCoordonnees({ data, setData }: {
+  data: QuizData
+  setData: React.Dispatch<React.SetStateAction<QuizData>>
+}) {
+  const set = (field: keyof QuizData) => (value: string) =>
+    setData(d => ({ ...d, [field]: value }))
+
+  return (
+    <div className="space-y-8">
+      <SectionTitle
+        title="Vos coordonnées"
+        subtitle="Ces informations permettront à l'équipe IA Loire Valley de vous recontacter pour votre entretien de bilan."
+      />
+      <div className="space-y-4">
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Interlocuteur du diagnostic</p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <FieldInput label="Nom Prénom" required value={data.nomPrenom} onChange={e => set('nomPrenom')(e.target.value)} />
+          <FieldInput label="Fonction" required value={data.fonction} onChange={e => set('fonction')(e.target.value)} />
+          <FieldInput label="Email" required type="email" value={data.email} onChange={e => set('email')(e.target.value)} />
+          <FieldInput label="Téléphone" required value={data.telephone} onChange={e => set('telephone')(e.target.value)} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function SuccessScreen({ data }: { data: QuizData }) {
   return (
     <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center px-4">
@@ -891,7 +908,8 @@ export function ProjectPage() {
   const [stepError, setStepError] = useState<string | null>(null)
 
   const totalSteps = STEPS.length
-  const progress = (step / (totalSteps - 1)) * 100
+  const VISIBLE_STEPS = totalSteps - 2 // étapes 1→7, l'étape 8 est cachée
+  const progress = step <= VISIBLE_STEPS ? (step / VISIBLE_STEPS) * 100 : 100
 
   const toggleCheckbox = (field: ArrayField, value: string) => {
     setData(d => {
@@ -906,11 +924,14 @@ export function ProjectPage() {
   const validateStep = (): string | null => {
     if (step === 1) {
       if (!data.raisonSociale.trim()) return 'La Raison Sociale est obligatoire.'
-      if (!data.nomPrenom.trim()) return 'Le Nom et Prénom de l\'interlocuteur sont obligatoires.'
+    }
+    if (step === totalSteps - 1) {
+      if (!data.nomPrenom.trim()) return 'Le Nom et Prénom sont obligatoires.'
       if (!data.fonction.trim()) return 'La Fonction est obligatoire.'
       if (!data.email.trim()) return 'L\'email est obligatoire.'
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return 'L\'adresse email n\'est pas valide.'
       if (!data.telephone.trim()) return 'Le téléphone est obligatoire.'
+      if (!data.rgpdConsent) return 'Vous devez accepter le traitement de vos données avant d\'envoyer le diagnostic.'
     }
     return null
   }
@@ -930,10 +951,8 @@ export function ProjectPage() {
   }
 
   const handleSubmit = async () => {
-    if (!data.rgpdConsent) {
-      setStepError('Vous devez accepter le traitement de vos données avant d\'envoyer le diagnostic.')
-      return
-    }
+    const error = validateStep()
+    if (error) { setStepError(error); return }
     setStepError(null)
     setSubmitting(true)
     try {
@@ -975,19 +994,19 @@ export function ProjectPage() {
           <span className="inline-flex items-center bg-violet/10 text-violet text-xs font-bold tracking-wider uppercase rounded-full px-3 py-1.5 min-w-0 truncate">
             {STEPS[step].category}
           </span>
-          {step > 0 && (
+          {step > 0 && step <= VISIBLE_STEPS && (
             <span className="text-sm text-gray-400 font-medium shrink-0">
-              ÉTAPE {step} / {totalSteps - 1}
+              ÉTAPE {step} / {VISIBLE_STEPS}
             </span>
           )}
         </div>
 
         {/* Carte contenu */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-8">
-          {/* Pills de progression (étapes 1 à totalSteps-1, pas sur l'intro) */}
-          {step > 0 && (
+          {/* Pills de progression (étapes 1→7 uniquement, étape 8 cachée) */}
+          {step > 0 && step <= VISIBLE_STEPS && (
             <div className="flex gap-1.5 mb-6">
-              {Array.from({ length: totalSteps - 1 }, (_, i) => i + 1).map(i => (
+              {Array.from({ length: VISIBLE_STEPS }, (_, i) => i + 1).map(i => (
                 <div
                   key={i}
                   className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
@@ -1005,22 +1024,23 @@ export function ProjectPage() {
           {step === 5 && <StepGestionDonnees data={data} setData={setData} toggleCheckbox={toggleCheckbox} />}
           {step === 6 && <StepAutomatisationIA data={data} setData={setData} />}
           {step === 7 && <StepNumeriqueResponsable data={data} setData={setData} toggleCheckbox={toggleCheckbox} />}
+          {step === 8 && (
+            <>
+              <StepCoordonnees data={data} setData={setData} />
+              <label className="flex items-start gap-3 mt-8 p-4 bg-gray-50 rounded-2xl border border-gray-200 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={data.rgpdConsent}
+                  onChange={e => { setData(d => ({ ...d, rgpdConsent: e.target.checked })); setStepError(null) }}
+                  className="mt-0.5 w-4 h-4 accent-violet shrink-0"
+                />
+                <span className="text-sm text-gray-700 leading-relaxed">
+                  J'accepte que les données saisies soient transmises à <strong>Dev'Up Centre-Val de Loire</strong> et à l'équipe <strong>IA Loire Valley</strong> dans le cadre de cet accompagnement, conformément au RGPD. Ces données ne seront utilisées qu'à des fins d'orientation et de suivi de mon projet numérique. <span className="text-magenta font-medium">*</span>
+                </span>
+              </label>
+            </>
+          )}
         </div>
-
-        {/* Consentement RGPD — affiché uniquement à la dernière étape */}
-        {step === totalSteps - 1 && (
-          <label className="flex items-start gap-3 mt-4 p-4 bg-white rounded-2xl border border-gray-100 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={data.rgpdConsent}
-              onChange={e => { setData(d => ({ ...d, rgpdConsent: e.target.checked })); setStepError(null) }}
-              className="mt-0.5 w-4 h-4 accent-violet shrink-0"
-            />
-            <span className="text-sm text-gray-700 leading-relaxed">
-              J'accepte que les données saisies soient transmises à <strong>Dev'Up Centre-Val de Loire</strong> et à l'équipe <strong>IA Loire Valley</strong> dans le cadre de cet accompagnement, conformément au RGPD. Ces données ne seront utilisées qu'à des fins d'orientation et de suivi de mon projet numérique. <span className="text-magenta font-medium">*</span>
-            </span>
-          </label>
-        )}
 
         {/* Message d'erreur */}
         {stepError && (
@@ -1041,9 +1061,13 @@ export function ProjectPage() {
             </button>
           ) : <div />}
 
-          {step < totalSteps - 1 ? (
+          {step < VISIBLE_STEPS ? (
             <Button onClick={goNext} className="rounded-full px-8">
               Suivant <ArrowRight className="ml-2 w-4 h-4" />
+            </Button>
+          ) : step === VISIBLE_STEPS ? (
+            <Button onClick={goNext} className="rounded-full px-8">
+              Terminer <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           ) : (
             <Button onClick={handleSubmit} disabled={submitting} className="rounded-full px-8">

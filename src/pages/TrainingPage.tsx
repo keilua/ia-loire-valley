@@ -185,7 +185,7 @@ export function TrainingPage() {
         {/* Partners */}
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Plateformes recommandées</h2>
-          <p className="text-gray-500 mb-6">Ressources sélectionnées — certaines entièrement gratuites.</p>
+          <p className="text-gray-500 mb-6">Ressources sélectionnées certaines entièrement gratuites.</p>
           <div className="grid md:grid-cols-2 gap-6">
             {platforms.map(p => {
               const isInternal = p.url.startsWith('/')
