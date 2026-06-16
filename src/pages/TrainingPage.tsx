@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, GraduationCap, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft, GraduationCap, ArrowRight, ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
 import { useTrainings, usePlatforms } from '../hooks/useData'
@@ -12,18 +12,27 @@ const PER_PAGE = 6
 export function TrainingPage() {
   const [selectedLevel, setSelectedLevel] = useState<TrainingLevel | 'all'>('all')
   const [selectedFormat, setSelectedFormat] = useState<TrainingFormat | 'all'>('all')
+  const [search, setSearch] = useState('')
   const [page, setPage] = useState(0)
+  const sectionRef = useRef<HTMLDivElement>(null)
 
   const { data: trainings = [], loading, error } = useTrainings()
   const { data: platforms = [] } = usePlatforms()
 
-  const filteredTrainings = trainings.filter(t =>
-    (selectedLevel === 'all' || t.level === selectedLevel) &&
-    (selectedFormat === 'all' || t.format === selectedFormat),
-  )
+  const filteredTrainings = trainings.filter(t => {
+    const q = search.toLowerCase()
+    return (selectedLevel === 'all' || t.level === selectedLevel) &&
+      (selectedFormat === 'all' || t.format === selectedFormat) &&
+      (q === '' || t.title.toLowerCase().includes(q) || t.provider.toLowerCase().includes(q))
+  })
 
   const totalPages = Math.ceil(filteredTrainings.length / PER_PAGE)
   const pagedTrainings = filteredTrainings.slice(page * PER_PAGE, (page + 1) * PER_PAGE)
+
+  function goToPage(p: number) {
+    setPage(p)
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   function setFilter<T>(setter: (v: T) => void) {
     return (v: T) => { setter(v); setPage(0) }
@@ -59,11 +68,22 @@ export function TrainingPage() {
         </Card>
 
         {/* Training from DB */}
-        <div className="mb-12">
+        <div className="mb-12" ref={sectionRef}>
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Formations disponibles</h2>
 
           {/* Filters */}
           <div className="flex flex-col gap-3 mb-6">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher une formation ou un organisme…"
+                value={search}
+                onChange={e => { setSearch(e.target.value); setPage(0) }}
+                className="w-full pl-9 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-magenta/30 focus:border-magenta"
+              />
+            </div>
             <div className="flex flex-wrap gap-2">
               {(['all', 'Débutant', 'Intermédiaire', 'Avancé'] as const).map(lvl => (
                 <button
@@ -130,7 +150,7 @@ export function TrainingPage() {
               {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2">
                   <button
-                    onClick={() => setPage(p => p - 1)}
+                    onClick={() => goToPage(page - 1)}
                     disabled={page === 0}
                     className="p-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                   >
@@ -139,7 +159,7 @@ export function TrainingPage() {
                   {Array.from({ length: totalPages }, (_, i) => (
                     <button
                       key={i}
-                      onClick={() => setPage(i)}
+                      onClick={() => goToPage(i)}
                       className={`w-9 h-9 rounded-xl text-sm font-medium transition-all ${
                         page === i
                           ? 'bg-linear-to-r from-magenta to-violet text-white shadow-sm'
@@ -150,7 +170,7 @@ export function TrainingPage() {
                     </button>
                   ))}
                   <button
-                    onClick={() => setPage(p => p + 1)}
+                    onClick={() => goToPage(page + 1)}
                     disabled={page === totalPages - 1}
                     className="p-2 rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                   >
