@@ -78,7 +78,7 @@ export function AboutPage() {
               </p>
               <p className="text-gray-600 leading-relaxed">
                 IA Loire Valley joue ce rôle d'<strong className="text-gray-800">orienteur régional</strong> : comprendre votre situation,
-                identifier vos besoins, et vous connecter aux bons experts, formations et financements — sans conflit d'intérêt,
+                identifier vos besoins, et vous connecter aux bons experts, formations et financements sans conflit d'intérêt,
                 sans démarche commerciale.
               </p>
             </div>
