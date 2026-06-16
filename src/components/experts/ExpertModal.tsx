@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { X, MapPin, Mail, Globe, Building2, Star, Phone } from 'lucide-react'
 import { Button } from '../ui/Button'
+import { formatPhone } from '../../utils/formatPhone'
 import type { Expert } from '../../types'
 
 const levelColors: Record<string, string> = {
@@ -97,29 +98,27 @@ export function ExpertModal({ expert, onClose }: Props) {
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-4 pt-2">
             {expert.email && (
-              <a href={`mailto:${expert.email}`} className="flex-1">
-                <Button className="w-full rounded-xl">
-                  <Mail className="mr-2 w-4 h-4" />Contacter
-                </Button>
+              <a href={`mailto:${expert.email}`} className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-magenta transition-colors">
+                <Mail className="w-4 h-4 shrink-0" />{expert.email}
               </a>
             )}
             {expert.phone && (
-              <a href={`tel:${expert.phone}`} className="flex-1">
-                <Button variant="outline" className="w-full rounded-xl">
-                  <Phone className="mr-2 w-4 h-4" />Appeler
-                </Button>
+              <a href={`tel:${expert.phone}`} className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-magenta transition-colors sm:pointer-events-none sm:cursor-default sm:hover:text-gray-600">
+                <Phone className="w-4 h-4 shrink-0" />{formatPhone(expert.phone)}
               </a>
             )}
-            {expert.website && (
+          </div>
+          {expert.website && (
+            <div className="pt-2">
               <a href={expert.website} target="_blank" rel="noopener noreferrer" className="flex-1">
                 <Button variant="outline" className="w-full rounded-xl">
                   <Globe className="mr-2 w-4 h-4" />Site web
                 </Button>
               </a>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

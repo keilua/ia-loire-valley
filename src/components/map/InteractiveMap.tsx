@@ -35,14 +35,16 @@ interface MapMarker {
   label: string
   sublabel?: string
   color: 'expert' | 'ambassadeur'
+  email?: string
 }
 
 interface Props {
   experts?: Expert[]
   ambassadeurs?: Ambassadeur[]
+  onExpertClick?: (id: string) => void
 }
 
-export function InteractiveMap({ experts = [], ambassadeurs = [] }: Props) {
+export function InteractiveMap({ experts = [], ambassadeurs = [], onExpertClick }: Props) {
   const [markers, setMarkers] = useState<MapMarker[]>([])
   const [geocoding, setGeocoding] = useState(0)
 
@@ -101,6 +103,7 @@ export function InteractiveMap({ experts = [], ambassadeurs = [] }: Props) {
               label: `${amb.prenom} ${amb.nom}`,
               sublabel: amb.organisation,
               color: 'ambassadeur' as const,
+              email: amb.email,
             },
           ])
         }
@@ -131,9 +134,24 @@ export function InteractiveMap({ experts = [], ambassadeurs = [] }: Props) {
             icon={m.color === 'expert' ? expertIcon : ambassadeurIcon}
           >
             <Popup>
-              <div className="text-sm">
+              <div className="text-sm min-w-35">
                 <p className="font-semibold">{m.label}</p>
                 {m.sublabel && <p className="text-gray-500 text-xs mt-0.5">{m.sublabel}</p>}
+                <div className="mt-2">
+                  {m.color === 'expert' && onExpertClick && (
+                    <button
+                      onClick={() => onExpertClick(m.id)}
+                      className="text-xs font-medium text-magenta hover:underline"
+                    >
+                      Voir le profil →
+                    </button>
+                  )}
+                  {m.color === 'ambassadeur' && m.email && (
+                    <a href={`mailto:${m.email}`} className="text-xs font-medium text-violet hover:underline">
+                      Contacter →
+                    </a>
+                  )}
+                </div>
               </div>
             </Popup>
           </Marker>

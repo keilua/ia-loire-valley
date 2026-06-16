@@ -1,6 +1,7 @@
 import { useState, lazy, Suspense, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Search, MapPin, Mail, Building2, Users, Filter } from 'lucide-react'
+import { ArrowLeft, Search, MapPin, Mail, Building2, Users, Filter, Phone } from 'lucide-react'
+import { formatPhone } from '../utils/formatPhone'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/card'
 import { useExperts, useAmbassadeurs } from '../hooks/useData'
@@ -127,7 +128,7 @@ export function ExpertsPage() {
         <div className="mb-6">
           <Suspense fallback={<div className="h-80 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-500 text-sm">Chargement de la carte…</div>}>
             {tab === 'experts'
-              ? <InteractiveMap key="experts" experts={filteredExperts} />
+              ? <InteractiveMap key="experts" experts={filteredExperts} onExpertClick={id => { const e = experts.find(x => x.id === id); if (e) setSelectedModal(e) }} />
               : <InteractiveMap key="ambassadeurs" ambassadeurs={filteredAmb} />
             }
           </Suspense>
@@ -245,7 +246,16 @@ function ExpertCard({ expert, onClick }: { expert: Expert; onClick: () => void }
           <span key={s} className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">{s}</span>
         ))}
       </div>
-      <p className="text-xs text-gray-500 line-clamp-2 mb-4">{expert.description}</p>
+      <p className="text-xs text-gray-500 line-clamp-2 mb-3">{expert.description}</p>
+      {expert.phone && (
+        <a
+          href={`tel:${expert.phone}`}
+          onClick={e => e.stopPropagation()}
+          className="flex items-center gap-1.5 text-xs text-gray-500 mb-3 w-fit sm:pointer-events-none sm:cursor-default hover:text-magenta sm:hover:text-gray-500 transition-colors"
+        >
+          <Phone className="w-3.5 h-3.5 shrink-0" />{formatPhone(expert.phone)}
+        </a>
+      )}
       <Button size="sm" variant="outline" className="w-full rounded-xl group-hover:border-magenta group-hover:text-magenta transition-colors">
         Voir le profil
       </Button>
