@@ -448,7 +448,8 @@ function RadioCardGroup({ items, values, onChange }: {
 function StepIntro() {
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">Diagnostic IA</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-1">Diagnostic IA</h2>
+      <p className="text-sm font-medium text-magenta mb-4">Évaluation de votre maturité numérique</p>
       <p className="text-gray-600 leading-relaxed mb-4">
         Ce questionnaire s'inscrit dans le cadre de l'initiative régionale <strong>IA Loire Valley</strong> pour accompagner la transformation numérique des entreprises du Centre-Val de Loire.
       </p>

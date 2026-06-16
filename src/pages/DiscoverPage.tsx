@@ -63,7 +63,7 @@ export function DiscoverPage() {
 
         {/* What is AI */}
         <Card className="p-8 mb-12 bg-linear-to-br from-white to-purple-50/30 rounded-3xl shadow-sm">
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
             <div className="w-12 h-12 rounded-xl bg-linear-to-br from-magenta to-violet flex items-center justify-center shrink-0">
               <Brain className="w-6 h-6 text-white" />
             </div>
